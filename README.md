@@ -1,196 +1,87 @@
-# Ruska AI Skills
+# mifunedev/skills
 
-A collection of agent skills for Claude Code and Cursor that extend AI capabilities with specialized knowledge, workflows, and tool integrations.
+A portable, cross-agent skill library. Each skill is a plain folder containing a `SKILL.md` file that conforms to the [Agent Skills specification](https://agentskills.io/specification). The installer copies the folder to your project — no daemon, no runtime, no build step.
 
-## What Are Skills?
-
-Skills are modular, self-contained folders that transform general-purpose AI agents into specialized assistants. They provide:
-
-- **Specialized Workflows** — Multi-step procedures for specific domains
-- **Tool Integrations** — Instructions for working with specific file formats or APIs
-- **Domain Expertise** — Company-specific knowledge, schemas, business logic
-- **Bundled Resources** — Scripts, references, and assets for complex tasks
-
-## Skill Structure
-
-Every skill follows this directory structure:
-
-```
-skill-name/
-├── SKILL.md              # Required — main instructions and metadata
-├── references/           # Optional — documentation loaded on demand
-│   └── api-docs.md
-├── scripts/              # Optional — executable utility scripts
-│   └── helper.py
-└── assets/               # Optional — templates, images, files for output
-    └── template.html
-```
-
-### SKILL.md Format
-
-```markdown
----
-name: your-skill-name
-description: Brief description of what this skill does and when to use it. Include trigger phrases.
 ---
 
-# Your Skill Name
-
-## Instructions
-Clear, step-by-step guidance for the agent.
-
-## Examples
-Concrete examples demonstrating usage.
-```
-
-### Metadata Fields
-
-| Field | Requirements | Purpose |
-|-------|--------------|---------|
-| `name` | Max 64 chars, lowercase letters/numbers/hyphens | Unique identifier |
-| `description` | Max 1024 chars | Triggers skill activation—be specific |
-
-## Installation
-
-### Personal Skills (All Projects)
+## Install
 
 ```bash
-# Clone to personal skills directory
-git clone https://github.com/ruska-ai/skills.git ~/.cursor/skills/ruska-ai
-
-# Or for Claude Code
-git clone https://github.com/ruska-ai/skills.git ~/.codex/skills/ruska-ai
+curl -fsSL https://raw.githubusercontent.com/mifunedev/skills/master/scripts/install.sh | bash -s -- install <skill-name> --scope project
 ```
 
-### Project Skills (Repository-Specific)
+The `| bash -s --` pattern sends the downloaded script to bash. Everything after `--` is passed as arguments to the script itself, not to bash.
 
-```bash
-# Add as submodule to your project
-git submodule add https://github.com/ruska-ai/skills.git .cursor/skills/ruska-ai
-```
+**Options:**
 
-## Writing Effective Skills
+| Flag | Default | Purpose |
+|------|---------|---------|
+| `--scope project` | `project` | Install into the current git repo |
+| `--client agents\|claude\|harness` | `agents` | Target client destination (`.agents/skills/`, `.claude/skills/`, or both) |
 
-### Core Principles
+The installer pins the registry commit SHA in `.mifune/skills.lock`, so re-installs of the same version are deterministic.
 
-1. **Concise is Key** — Only include context the agent doesn't already have
-2. **Keep SKILL.md Under 500 Lines** — Use progressive disclosure for detailed content
-3. **Be Specific in Descriptions** — Include trigger phrases and scenarios
-4. **Set Appropriate Degrees of Freedom** — Match specificity to task fragility
+---
 
-### Description Best Practices
+## Skill catalog
 
-Write descriptions in third person with both WHAT and WHEN:
+| Skill | Category | Trigger phrases | Requires |
+|-------|----------|-----------------|----------|
+| `open-harness-review` | open-harness | "audit the harness", "review harness health", "what should we fix" | `gh`, `git` |
+| `docker-sandbox-debug` | dev-workflow | "container won't start", "port already in use", "bind mount empty" | `docker` |
+| `github-prd` | dev-workflow | "create a prd", "plan this feature", "requirements for", "spec out" | `gh` |
 
-```yaml
-# Good
-description: Extract text from PDF files, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction.
+The canonical index is [`registry.json`](registry.json), with one entry per Mifune-curated skill plus an integrity checksum.
 
-# Bad (too vague)
-description: Helps with documents
-```
+---
 
-### Progressive Disclosure
+## Add a skill
 
-Keep essential instructions in SKILL.md; move detailed references to separate files:
+Adding a new skill should take **<10 minutes**.
 
-```markdown
-## Quick Start
-[Essential instructions]
+1. Create the skill folder: `mkdir skills/<name>` (lowercase, hyphens, ≤ 64 chars).
+2. Copy the template: `cp template/SKILL.md skills/<name>/SKILL.md` (template is forthcoming; for V0, start from an existing skill's `SKILL.md`).
+3. Fill in the frontmatter: set `name`, `description`, `license`, and `metadata.mifune.version`.
+4. Write the skill body — imperative instructions the agent follows step by step.
+5. Recompute checksums: `scripts/refresh-checksums.sh` (writes back into `registry.json`).
+6. Add a `skills[]` entry in `registry.json` with `name`, `path`, `version`, `description`, `category`, `requires-tools`, `clients`, `license`, `added`, `updated`.
+7. Validate: `scripts/validate.sh` — must report `PASS` (skills-ref + 5 Mifune rules + checksum integrity).
+8. Commit `skills/<name>/` and `registry.json` in the same commit.
 
-## Additional Resources
-- For API details, see [references/api.md](references/api.md)
-- For examples, see [references/examples.md](references/examples.md)
-```
+See [`docs/checksum.md`](docs/checksum.md) for the checksum algorithm and [`docs/portability.md`](docs/portability.md) for the frontmatter deny-list (stricter than the upstream spec).
 
-## Common Patterns
+---
 
-### Template Pattern
+## Layout
 
-```markdown
-## Report Format
+| Path | Purpose |
+|------|---------|
+| `registry.json` | Hand-written V0 seed index of Mifune-curated skills (name, version, checksum per entry) |
+| `skills/<name>/` | One subfolder per Mifune-curated skill (`SKILL.md` + optional `scripts/`, `references/`, `assets/`, per-skill `LICENSE`) |
+| `scripts/install.sh` | Bash installer — `curl \| bash` entry point; defaults to `master` branch, overridable via `MIFUNE_REGISTRY_BRANCH` |
+| `scripts/validate.sh` | CI gatekeeper — 19 checks (skills-ref, JSON, registry parity, line count, deny-list, checksum integrity) |
+| `scripts/refresh-checksums.sh` | V0 manual workflow to refresh checksums when a skill file changes |
+| `scripts/test-install.sh` | Hermetic test harness for `install.sh` (6 scenarios) |
+| `docs/` | Algorithm + portability documentation |
+| `template/` | Boilerplate for `mifune skills new <name>` (V1) |
+| `.claude-plugin/` | Reserved for V1 `marketplace.json` |
+| `rlm/` | Guest skill (Ruska AI) — coexists at the repo root, not indexed in `registry.json` |
 
-Use this template:
+---
 
-\`\`\`markdown
-# [Title]
+## Licensing
 
-## Summary
-[Key findings]
+This repository is licensed under [MIT](LICENSE) at the root.
 
-## Recommendations
-1. Action item
-2. Action item
-\`\`\`
-```
+Each Mifune-curated skill under `skills/<name>/` carries its own [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) `LICENSE` file as a per-skill override. Per-skill license overrides are an explicit affordance of the Agent Skills specification.
 
-### Workflow Pattern
+---
 
-```markdown
-## Process
+## Roadmap
 
-1. **Analyze** — Review the input
-2. **Plan** — Determine approach
-3. **Execute** — Run the operation
-4. **Validate** — Verify the output
-```
+- **V0 (this release)**: 3 seed skills, hand-written `registry.json`, Bash installer, validator, CI.
+- **V1**: TypeScript CLI (`@mifune/skills-cli`), npm + GHCR distribution, `.claude-plugin/marketplace.json` generator, `skills.mifune.dev` static site.
+- **V2**: Sigstore signing, Open Harness `oh skills` wrapper, standalone binary.
+- **V3**: Community contributions, federated registries.
 
-### Conditional Pattern
-
-```markdown
-## Choose Your Path
-
-**Creating new?** → Follow "Creation Workflow"
-**Editing existing?** → Follow "Edit Workflow"
-```
-
-## Bundled Resources
-
-### Scripts (`scripts/`)
-
-Executable code for deterministic, repeatable tasks:
-
-```bash
-python scripts/validate.py input.json
-```
-
-### References (`references/`)
-
-Documentation loaded into context as needed:
-
-- API specifications
-- Database schemas
-- Domain knowledge
-- Workflow guides
-
-### Assets (`assets/`)
-
-Files used in output (not loaded into context):
-
-- Templates
-- Images
-- Boilerplate code
-
-## Anti-Patterns to Avoid
-
-| Avoid | Instead |
-|-------|---------|
-| Too many library options | Provide one default with escape hatch |
-| Time-sensitive information | Use versioned sections |
-| Vague skill names like `helper` | Use descriptive names like `pdf-processor` |
-| Windows-style paths `scripts\file.py` | Use forward slashes `scripts/file.py` |
-
-## Contributing
-
-1. Fork this repository
-2. Create a skill following the structure above
-3. Ensure your skill:
-   - Has a descriptive name (max 64 chars, lowercase with hyphens)
-   - Includes specific description with trigger phrases
-   - Keeps SKILL.md under 500 lines
-   - Uses progressive disclosure for detailed content
-4. Submit a pull request
-
-## License
-
-MIT License — See [LICENSE](LICENSE) for details.
+Full design and milestone acceptance criteria: [ryaneggz/open-harness PR #306](https://github.com/ryaneggz/open-harness/pull/306).
