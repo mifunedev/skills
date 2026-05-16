@@ -1,0 +1,59 @@
+{
+  "_v0_note": "This registry.json is hand-written for the V0 seed release and indexes only the Mifune-curated skills under skills/<name>/. The top-level rlm/ directory (Ruska AI) coexists in this repo but is outside the Mifune V0 curation and is not indexed here. The automated generator (scripts/publish-registry.sh) and drift-parity CI check are deferred to V1 per the project PRD Non-Goals. Do not edit checksum values manually — recompute using scripts/refresh-checksums.sh (algorithm documented in docs/checksum.md).",
+  "$schema": "./docs/schema/registry.v1.json",
+  "name": "mifunedev-skills",
+  "description": "Cross-agent skill library curated by Mifune Dev.",
+  "version": "2026.5.16",
+  "owner": {
+    "name": "Mifune Dev",
+    "url": "https://mifune.dev"
+  },
+  "skills": [
+    {
+      "name": "open-harness-review",
+      "path": "skills/open-harness-review",
+      "version": "0.1.0",
+      "checksum": "sha256:2c51b0ca69abeec97397bfc9d250d504b630d3c20c86780295074a5be3e73e82",
+      "description": "Spawn 4 parallel sub-agents (PM, Implementer, Critic, Explorer) to audit an Open Harness instance and produce a tier-ranked improvement report. Synthesizes findings and outputs the recommended next 3 actions. Invoke when asked to audit an Open Harness repo, review harness health, find improvements, triage \"what should we fix\", or run a periodic system check on an OH-based project.",
+      "category": "open-harness",
+      "requires-tools": [
+        "gh",
+        "git"
+      ],
+      "clients": [],
+      "license": "Apache-2.0",
+      "added": "2026-05-16",
+      "updated": "2026-05-16"
+    },
+    {
+      "name": "docker-sandbox-debug",
+      "path": "skills/docker-sandbox-debug",
+      "version": "0.1.0",
+      "checksum": "sha256:1cff2133a821dc60cb854ec4f462775fb320fab8bb5ce9e38912fc6c13867627",
+      "description": "Diagnose and fix common Docker sandbox failures: containers that won't start, port collisions, volume mount errors, network issues, and log retrieval. Use when a container exits unexpectedly, a port is already in use, a bind mount shows empty or permission-denied errors, or you need to capture logs from a running container or in-sandbox tmux session.",
+      "category": "dev-workflow",
+      "requires-tools": [
+        "docker"
+      ],
+      "clients": [],
+      "license": "Apache-2.0",
+      "added": "2026-05-16",
+      "updated": "2026-05-16"
+    },
+    {
+      "name": "github-prd",
+      "path": "skills/github-prd",
+      "version": "0.1.0",
+      "checksum": "sha256:473fa94384f2c6e0749f10365365ddb0c91374f62d1e9a747fc25d834cf5b661",
+      "description": "Generate a Product Requirements Document (PRD) for a new feature and save it to the project task directory. Use when planning a feature, starting a new project, or when asked to create a PRD. Triggers on: create a prd, write prd for, plan this feature, requirements for, spec out.",
+      "category": "dev-workflow",
+      "requires-tools": [
+        "gh"
+      ],
+      "clients": [],
+      "license": "Apache-2.0",
+      "added": "2026-05-16",
+      "updated": "2026-05-16"
+    }
+  ]
+}
