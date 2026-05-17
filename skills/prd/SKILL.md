@@ -1,17 +1,7 @@
 ---
-name: github-prd
-description: "Generate a Product Requirements Document (PRD) for a new feature and save it to the project task directory. Use when planning a feature, starting a new project, or when asked to create a PRD. Triggers on: create a prd, write prd for, plan this feature, requirements for, spec out."
-license: Apache-2.0
-metadata:
-  mifune:
-    version: "0.1.0"
-    category: dev-workflow
-    requires-tools: ["gh"]
-    claude-code:
-      argument-hint: "<feature description>"
+name: prd
+description: "Generate a Product Requirements Document (PRD) for a new feature. Use when planning a feature, starting a new project, or when asked to create a PRD. Triggers on: create a prd, write prd for, plan this feature, requirements for, spec out."
 ---
-
-<!-- Adapted from ryaneggz/open-harness:.claude/skills/prd/SKILL.md -->
 
 # PRD Generator
 
@@ -21,10 +11,10 @@ Create detailed Product Requirements Documents that are clear, actionable, and s
 
 ## The Job
 
-1. Receive a feature description (passed as an argument or provided interactively)
+1. Receive a feature description from the user
 2. Ask 3-5 essential clarifying questions (with lettered options)
 3. Generate a structured PRD based on answers
-4. Save to `tasks/<feature-name>/prd.md`
+4. Save to `tasks/prd-[feature-name].md`
 
 **Important:** Do NOT start implementing. Just create the PRD.
 
@@ -99,13 +89,13 @@ Each story should be small enough to implement in one focused session.
 - [ ] Specific verifiable criterion
 - [ ] Another criterion
 - [ ] Typecheck/lint passes
-- [ ] **[UI stories only]** Verify in browser using the appropriate browser preview tool
+- [ ] **[UI stories only]** Verify in browser using agent-browser skill
 ```
 
 **Important:**
 
 - Acceptance criteria must be verifiable, not vague. "Works correctly" is bad. "Button shows confirmation dialog before deleting" is good.
-- **For any story with UI changes:** Always include a browser verification step as acceptance criteria. This ensures visual verification of frontend work.
+- **For any story with UI changes:** Always include "Verify in browser using agent-browser skill" as acceptance criteria. This ensures visual verification of frontend work.
 
 ### 4. Functional Requirements
 
@@ -162,7 +152,7 @@ The PRD reader may be a junior developer or AI agent. Therefore:
 - **Format:** Markdown (`.md`)
 - **Location:** `tasks/<feature-name>/`
 - **Filename:** `prd.md`
-- **Feature name (`<short-desc>`):** lowercase kebab-case, `[a-z0-9-]+`, **≤5 words**. Slugify the user-supplied name:
+- **Feature name (`<short-desc>`):** lowercase kebab-case, `[a-z0-9-]+`, **≤5 words** (per `.claude/rules/git.md` — this slug becomes the `<short-desc>` segment in any branch the task produces). Slugify the user-supplied name:
   - Lowercase everything
   - Replace runs of whitespace or punctuation with a single `-`
   - Strip leading/trailing `-`
@@ -186,8 +176,7 @@ The PRD reader may be a junior developer or AI agent. Therefore:
 
 ## Introduction
 
-Add priority levels to tasks so users can focus on what matters most. Tasks can be marked as
-high, medium, or low priority, with visual indicators and filtering.
+Add priority levels to tasks so users can focus on what matters most. Tasks can be marked as high, medium, or low priority, with visual indicators and filtering to help users manage their workload effectively.
 
 ## Goals
 
@@ -210,15 +199,38 @@ high, medium, or low priority, with visual indicators and filtering.
 
 ### US-002: Display priority indicator on task cards
 
-**Description:** As a user, I want to see task priority at a glance so I know what needs
-attention first.
+**Description:** As a user, I want to see task priority at a glance so I know what needs attention first.
 
 **Acceptance Criteria:**
 
 - [ ] Each task card shows colored priority badge (red=high, yellow=medium, gray=low)
 - [ ] Priority visible without hovering or clicking
 - [ ] Typecheck passes
-- [ ] Verify in browser using the appropriate browser preview tool
+- [ ] Verify in browser using agent-browser skill
+
+### US-003: Add priority selector to task edit
+
+**Description:** As a user, I want to change a task's priority when editing it.
+
+**Acceptance Criteria:**
+
+- [ ] Priority dropdown in task edit modal
+- [ ] Shows current priority as selected
+- [ ] Saves immediately on selection change
+- [ ] Typecheck passes
+- [ ] Verify in browser using agent-browser skill
+
+### US-004: Filter tasks by priority
+
+**Description:** As a user, I want to filter the task list to see only high-priority items when I'm focused.
+
+**Acceptance Criteria:**
+
+- [ ] Filter dropdown with options: All | High | Medium | Low
+- [ ] Filter persists in URL params
+- [ ] Empty state message when no tasks match filter
+- [ ] Typecheck passes
+- [ ] Verify in browser using agent-browser skill
 
 ## Functional Requirements
 
@@ -226,6 +238,7 @@ attention first.
 - FR-2: Display colored priority badge on each task card
 - FR-3: Include priority selector in task edit modal
 - FR-4: Add priority filter dropdown to task list header
+- FR-5: Sort by priority within each status column (high to medium to low)
 
 ## Non-Goals
 
@@ -243,6 +256,7 @@ attention first.
 
 - Users can change priority in under 2 clicks
 - High-priority tasks immediately visible at top of lists
+- No regression in task list performance
 
 ## Open Questions
 
