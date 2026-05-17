@@ -65,7 +65,6 @@ See [`docs/checksum.md`](docs/checksum.md) for the checksum algorithm and [`docs
 | `docs/` | Algorithm + portability documentation |
 | `template/` | Boilerplate for `mifune skills new <name>` (V1) |
 | `.claude-plugin/` | Reserved for V1 `marketplace.json` |
-| `rlm/` | Guest skill (Ruska AI) — coexists at the repo root, not indexed in `registry.json` |
 
 ---
 
@@ -73,7 +72,7 @@ See [`docs/checksum.md`](docs/checksum.md) for the checksum algorithm and [`docs
 
 This repository is licensed under [MIT](LICENSE) at the root.
 
-Each Mifune-curated skill under `skills/<name>/` carries its own [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) `LICENSE` file as a per-skill override. Per-skill license overrides are an explicit affordance of the Agent Skills specification.
+Each Mifune-curated skill under `skills/<name>/` carries its own [MIT](https://opensource.org/licenses/MIT) `LICENSE` file as a per-skill override. Per-skill license overrides are an explicit affordance of the Agent Skills specification.
 
 ---
 

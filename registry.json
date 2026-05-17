@@ -1,59 +1,200 @@
 {
-  "_v0_note": "This registry.json is hand-written for the V0 seed release and indexes only the Mifune-curated skills under skills/<name>/. The top-level rlm/ directory (Ruska AI) coexists in this repo but is outside the Mifune V0 curation and is not indexed here. The automated generator (scripts/publish-registry.sh) and drift-parity CI check are deferred to V1 per the project PRD Non-Goals. Do not edit checksum values manually — recompute using scripts/refresh-checksums.sh (algorithm documented in docs/checksum.md).",
+  "_v0_note": "This registry.json is hand-written for the V0 seed release and indexes only the Mifune-curated skills under skills/<name>/. The automated generator (scripts/publish-registry.sh) and drift-parity CI check are deferred to V1 per the project PRD Non-Goals. Do not edit checksum values manually — recompute using scripts/refresh-checksums.sh (algorithm documented in docs/checksum.md).",
   "$schema": "./docs/schema/registry.v1.json",
   "name": "mifunedev-skills",
   "description": "Cross-agent skill library curated by Mifune Dev.",
-  "version": "2026.5.16",
+  "version": "2026.5.17",
   "owner": {
     "name": "Mifune Dev",
     "url": "https://mifune.dev"
   },
   "skills": [
     {
-      "name": "open-harness-review",
-      "path": "skills/open-harness-review",
+      "name": "agent-browser",
+      "path": "skills/agent-browser",
       "version": "0.1.0",
-      "checksum": "sha256:2c51b0ca69abeec97397bfc9d250d504b630d3c20c86780295074a5be3e73e82",
-      "description": "Spawn 4 parallel sub-agents (PM, Implementer, Critic, Explorer) to audit an Open Harness instance and produce a tier-ranked improvement report. Synthesizes findings and outputs the recommended next 3 actions. Invoke when asked to audit an Open Harness repo, review harness health, find improvements, triage \"what should we fix\", or run a periodic system check on an OH-based project.",
-      "category": "open-harness",
-      "requires-tools": [
-        "gh",
-        "git"
-      ],
-      "clients": [],
-      "license": "Apache-2.0",
-      "added": "2026-05-16",
-      "updated": "2026-05-16"
-    },
-    {
-      "name": "docker-sandbox-debug",
-      "path": "skills/docker-sandbox-debug",
-      "version": "0.1.0",
-      "checksum": "sha256:1cff2133a821dc60cb854ec4f462775fb320fab8bb5ce9e38912fc6c13867627",
-      "description": "Diagnose and fix common Docker sandbox failures: containers that won't start, port collisions, volume mount errors, network issues, and log retrieval. Use when a container exits unexpectedly, a port is already in use, a bind mount shows empty or permission-denied errors, or you need to capture logs from a running container or in-sandbox tmux session.",
+      "checksum": "sha256:6786d9bc4a6d52d6992d475160923501a935f9329c930e714d04f691bdfcdb8d",
+      "description": "Open a URL in the headless agent-browser, with a preflight health check. Verifies agent-browser is installed and Chromium launches before navigating. Errors out with a diagnostic trace if anything fails. TRIGGER when: asked to open a page, browse a URL, take a screenshot, or test a site with agent-browser.",
       "category": "dev-workflow",
-      "requires-tools": [
-        "docker"
-      ],
+      "requires-tools": [],
       "clients": [],
-      "license": "Apache-2.0",
-      "added": "2026-05-16",
-      "updated": "2026-05-16"
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
     },
     {
-      "name": "github-prd",
-      "path": "skills/github-prd",
+      "name": "ci-status",
+      "path": "skills/ci-status",
       "version": "0.1.0",
-      "checksum": "sha256:473fa94384f2c6e0749f10365365ddb0c91374f62d1e9a747fc25d834cf5b661",
-      "description": "Generate a Product Requirements Document (PRD) for a new feature and save it to the project task directory. Use when planning a feature, starting a new project, or when asked to create a PRD. Triggers on: create a prd, write prd for, plan this feature, requirements for, spec out.",
+      "checksum": "sha256:0101319da83519db4950d83de2f18379c6b28fafb1e056d56819524e7f089670",
+      "description": "Check the CI pipeline status for the current branch after pushing changes. Reports pass/fail with failure details. Use this after every push to confirm your changes are truly done — CI must be green. TRIGGER when: after git push, after committing changes, when asked to check CI, or when verifying that work is complete.",
       "category": "dev-workflow",
       "requires-tools": [
         "gh"
       ],
       "clients": [],
-      "license": "Apache-2.0",
-      "added": "2026-05-16",
-      "updated": "2026-05-16"
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
+    },
+    {
+      "name": "delegate",
+      "path": "skills/delegate",
+      "version": "0.1.0",
+      "checksum": "sha256:2e3254f130510bc33fc24eefd470bd5a12f78b23c45286a4a06c6787d2ef28e8",
+      "description": "Parallel execution coordinator. Decomposes a plan into discrete tasks, identifies parallelism via dependency analysis, and spawns worker sub-agents in waves to maximize throughput without sacrificing quality. Collects results, validates completeness, and reports a structured summary. TRIGGER when: asked to delegate work, execute a plan, parallelize tasks, \"run this plan\", \"delegate this\", or after /prd or plan creation.",
+      "category": "orchestration",
+      "requires-tools": [],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
+    },
+    {
+      "name": "harness-audit",
+      "path": "skills/harness-audit",
+      "version": "0.1.0",
+      "checksum": "sha256:87b5304e29e67c2f80a3d9420de1879a70d52f58c91540ba8cfe8b4f79757a67",
+      "description": "Spawn 4 parallel sub-agents (PM, Implementer, Critic, Explorer) to audit the harness for improvements. Synthesizes findings into tier-ranked actionable list. Outputs recommended next 3 actions. TRIGGER when: asked to audit the harness, find improvements, review system health, \"what should we fix\", or periodically via heartbeat.",
+      "category": "open-harness",
+      "requires-tools": [
+        "git"
+      ],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
+    },
+    {
+      "name": "harness-context",
+      "path": "skills/harness-context",
+      "version": "0.1.0",
+      "checksum": "sha256:8e6a15b122191585f6863b84f2d0a79ec7a6a229b7a7fcc3850639dc1b688417",
+      "description": "Explain the Open Harness architecture, layout, and conventions. Use this skill when the user asks about project structure, layout, git workflow, rules, or how things are organized. Returns specific file paths and `path:line` citations. TRIGGER when: asked about harness structure, layout, conventions, rules, process, or project organization.",
+      "category": "open-harness",
+      "requires-tools": [],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
+    },
+    {
+      "name": "post-bridge",
+      "path": "skills/post-bridge",
+      "version": "0.1.0",
+      "checksum": "sha256:3864cce14dac03aa2a29128fca4b7e89f33ddde05af44e0facc6d755edcf234b",
+      "description": "Interact with the Post Bridge social media post management API. Use when the user wants to publish posts, upload media, manage social accounts, schedule content, or retrieve analytics via the Post Bridge platform. Triggers on: post to instagram, upload media to post bridge, schedule a social post, list social accounts, create a post, publish video, post bridge api.",
+      "category": "integration",
+      "requires-tools": [
+        "curl",
+        "jq"
+      ],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
+    },
+    {
+      "name": "prd",
+      "path": "skills/prd",
+      "version": "0.1.0",
+      "checksum": "sha256:99bcec6e0baa0ddb803c7bdca3f5fff8633e3f12ec209c4d72b5151b63f0c72e",
+      "description": "Generate a Product Requirements Document (PRD) for a new feature. Use when planning a feature, starting a new project, or when asked to create a PRD. Triggers on: create a prd, write prd for, plan this feature, requirements for, spec out.",
+      "category": "dev-workflow",
+      "requires-tools": [],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
+    },
+    {
+      "name": "ralph",
+      "path": "skills/ralph",
+      "version": "0.1.0",
+      "checksum": "sha256:6ac7a504a9df83a03012f818d62ac73f3b3bd8b6b1051b3258f284bce61e3bf8",
+      "description": "Convert PRDs to prd.json format for the Ralph autonomous agent system. Use when you have an existing PRD and need to convert it to Ralph's JSON format. Triggers on: convert this prd, turn this into ralph format, create prd.json from this, ralph json.",
+      "category": "orchestration",
+      "requires-tools": [],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
+    },
+    {
+      "name": "release",
+      "path": "skills/release",
+      "version": "0.1.0",
+      "checksum": "sha256:4289baafeaec4be78523f327256fd1a4651b78ad93b81881bbc89bbecf8f3006",
+      "description": "Cut a CalVer release: compute version, pre-flight, push release branch + tag, poll CI, verify GitHub Release + GHCR image. TRIGGER when: asked to release, version, tag, ship, cut a release, or push a new version.",
+      "category": "dev-workflow",
+      "requires-tools": [
+        "git",
+        "gh"
+      ],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
+    },
+    {
+      "name": "ship-spec",
+      "path": "skills/ship-spec",
+      "version": "0.1.0",
+      "checksum": "sha256:9a39cd3e659b7e79b10dff4f88aba7afa99e462fa1e72023edd09b7042ba32ee",
+      "description": "Compose /prd → 2 critics → /ralph → gh issue → branch → draft PR into a single end-to-end invocation. Produces a fully-scaffolded task ready for the Ralph runner, plus an open draft PR for observability. TRIGGER when: asked to scaffold a spec end-to-end, \"ship a spec\", \"set up a task PR\", or after planning a feature and ready to formalize. v1 stops at draft PR creation; loop launch + CI verification stay manual.",
+      "category": "orchestration",
+      "requires-tools": [
+        "gh",
+        "git",
+        "node"
+      ],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
+    },
+    {
+      "name": "skill-lint",
+      "path": "skills/skill-lint",
+      "version": "0.1.0",
+      "checksum": "sha256:ef4b1001a9a5bff1a730872683ef146f8b85c8f8397f4bcf007ef1ea9643b7c6",
+      "description": "Score all skills for staleness using 5 dimensions (freshness, usage, integrity, format, dependencies). Reports CURRENT/STALE/BROKEN/DELETE verdicts with specific recommendations. TRIGGER when: asked to audit skills, check skill health, \"are my skills stale\", \"skill lint\", or periodically via heartbeat.",
+      "category": "skills-meta",
+      "requires-tools": [],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
+    },
+    {
+      "name": "strategic-proposal",
+      "path": "skills/strategic-proposal",
+      "version": "0.1.0",
+      "checksum": "sha256:60ce5f2463d563a59cc73ec8f734b95f595d454fb11c9f77e6030acbbbd2800b",
+      "description": "Spawn 5 domain experts to propose roadmap items, then an AI council drafts a roadmap, a Strategic Critic challenges it, and the council finalizes with revisions. Updates the pinned roadmap issue and /roadmap page data. TRIGGER when: asked to build roadmap, prioritize features, strategic proposal, \"what should we build next\", or rank product priorities.",
+      "category": "orchestration",
+      "requires-tools": [
+        "gh"
+      ],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
+    },
+    {
+      "name": "worktrees",
+      "path": "skills/worktrees",
+      "version": "0.1.0",
+      "checksum": "sha256:c5c00cddacc6ed289f1d671fbab8fc39ce3c8fd38154a606a775c2b79ae4eddf",
+      "description": "Manage .worktrees/ lifecycle: create worktree, list worktrees, remove worktree, clean worktrees, stale worktrees audit, isolate work, project clone. TRIGGER when: any git worktree operation, branch isolation needed, stale worktrees review, project clone under .worktrees/project/, worktree cleanup.",
+      "category": "dev-workflow",
+      "requires-tools": [
+        "git"
+      ],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-17",
+      "updated": "2026-05-17"
     }
   ]
 }

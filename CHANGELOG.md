@@ -5,3 +5,16 @@ All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions use CalVer (`YYYY.M.D` with `-N` suffix for same-day releases) and match git tags.
 
 ## [Unreleased]
+
+### Added
+- 13 Mifune-curated skills synced from upstream harness `.claude/skills/`: `agent-browser`, `ci-status`, `delegate`, `harness-audit`, `harness-context`, `post-bridge`, `prd`, `ralph`, `release`, `ship-spec`, `skill-lint`, `strategic-proposal`, `worktrees`.
+- Per-skill `LICENSE` (MIT) file in each new skill directory.
+
+### Changed
+- `registry.json`: replaced `skills[]` array (3 placeholder entries → 13 current entries, alphabetical), set `license: "MIT"` on every entry, bumped top-level `version` to `2026.5.17`, refreshed all checksums via `scripts/refresh-checksums.sh`.
+- `README.md`: per-skill license callout fixed from Apache-2.0 to MIT (matches root LICENSE).
+- `registry.json` `_v0_note`: removed sentence about the now-deleted `rlm/` directory.
+
+### Removed
+- `rlm/` guest-skill directory (out of scope for Mifune V0 curation).
+- Placeholder skills `docker-sandbox-debug/`, `github-prd/`, `open-harness-review/` (superseded by the upstream-sync set above).
