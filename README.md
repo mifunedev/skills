@@ -1,86 +1,122 @@
-# mifunedev/skills
+<div align="center">
 
-A portable, cross-agent skill library. Each skill is a plain folder containing a `SKILL.md` file that conforms to the [Agent Skills specification](https://agentskills.io/specification). The installer copies the folder to your project — no daemon, no runtime, no build step.
+<table align="center">
+  <tr>
+    <td style="padding: 0; vertical-align: middle;">
+      <img
+        src="https://avatars.githubusercontent.com/u/139279732?v=4"
+        width="60"
+        height="60"
+        style="border-radius: 50%; display: block;"
+        alt="Mifune Logo"
+      />
+    </td>
+    <td style="padding: 0 0 0 12px; vertical-align: middle;">
+      <span style="font-weight: 600; font-style: italic; font-size: 2.4rem; line-height: 1;">
+        SKILLS
+      </span>
+    </td>
+  </tr>
+</table>
+
+A portable, cross-agent skill library for [Claude Code](https://claude.ai/code) and compatible AI agents.
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Skills](https://img.shields.io/badge/skills-15-brightgreen)](registry.json)
+
+</div>
+
+Each skill is a plain folder with a `SKILL.md` — drop it into your project and the agent starts using it immediately. No daemon, no runtime, no build step.
 
 ---
 
-## Install
+## 🚀 Install
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/mifunedev/skills/master/scripts/install.sh | bash -s -- install <skill-name> --scope project
 ```
 
-The `| bash -s --` pattern sends the downloaded script to bash. Everything after `--` is passed as arguments to the script itself, not to bash.
-
-**Options:**
-
 | Flag | Default | Purpose |
 |------|---------|---------|
 | `--scope project` | `project` | Install into the current git repo |
-| `--client agents\|claude\|harness` | `agents` | Target client destination (`.agents/skills/`, `.claude/skills/`, or both) |
+| `--client agents\|claude\|harness` | `agents` | Target destination (`.agents/skills/`, `.claude/skills/`, or both) |
 
-The installer pins the registry commit SHA in `.mifune/skills.lock`, so re-installs of the same version are deterministic.
-
----
-
-## Skill catalog
-
-| Skill | Category | Trigger phrases | Requires |
-|-------|----------|-----------------|----------|
-| `open-harness-review` | open-harness | "audit the harness", "review harness health", "what should we fix" | `gh`, `git` |
-| `docker-sandbox-debug` | dev-workflow | "container won't start", "port already in use", "bind mount empty" | `docker` |
-| `github-prd` | dev-workflow | "create a prd", "plan this feature", "requirements for", "spec out" | `gh` |
-
-The canonical index is [`registry.json`](registry.json), with one entry per Mifune-curated skill plus an integrity checksum.
+The installer pins the registry commit SHA in `.mifune/skills.lock` — re-installs of the same version are deterministic.
 
 ---
 
-## Add a skill
+## 📦 Skill Catalog
 
-Adding a new skill should take **<10 minutes**.
+15 skills across 4 categories:
 
-1. Create the skill folder: `mkdir skills/<name>` (lowercase, hyphens, ≤ 64 chars).
-2. Copy the template: `cp template/SKILL.md skills/<name>/SKILL.md` (template is forthcoming; for V0, start from an existing skill's `SKILL.md`).
-3. Fill in the frontmatter: set `name`, `description`, `license`, and `metadata.mifune.version`.
-4. Write the skill body — imperative instructions the agent follows step by step.
-5. Recompute checksums: `scripts/refresh-checksums.sh` (writes back into `registry.json`).
-6. Add a `skills[]` entry in `registry.json` with `name`, `path`, `version`, `description`, `category`, `requires-tools`, `clients`, `license`, `added`, `updated`.
-7. Validate: `scripts/validate.sh` — must report `PASS` (skills-ref + 5 Mifune rules + checksum integrity).
-8. Commit `skills/<name>/` and `registry.json` in the same commit.
+| Skill | Category | Description |
+|-------|----------|-------------|
+| [`agent-browser`](skills/agent-browser) | dev-workflow | Open a URL in the headless browser with preflight health check |
+| [`ci-status`](skills/ci-status) | dev-workflow | Poll CI after push; reports pass/fail with failure details |
+| [`prd`](skills/prd) | dev-workflow | Generate a Product Requirements Document for a new feature |
+| [`release`](skills/release) | dev-workflow | Cut a CalVer release: version, tag, push, CI poll, verify image |
+| [`worktrees`](skills/worktrees) | dev-workflow | Manage `.worktrees/` lifecycle: create, list, remove, clean, audit |
+| [`delegate`](skills/delegate) | orchestration | Parallel execution coordinator — decomposes plans into wave-executed sub-agents |
+| [`ralph`](skills/ralph) | orchestration | Convert PRDs to `prd.json` for the Ralph autonomous agent runner |
+| [`ship-spec`](skills/ship-spec) | orchestration | End-to-end scaffold: `/prd` → critics → `/ralph` → issue → branch → draft PR |
+| [`strategic-proposal`](skills/strategic-proposal) | orchestration | 5-expert council + Critic for roadmap planning and prioritization |
+| [`post-bridge`](skills/post-bridge) | integration | Publish posts, upload media, and schedule content via the Post Bridge API |
+| [`harness-audit`](skills/harness-audit) | open-harness | Spawn 4 parallel sub-agents (PM/Implementer/Critic/Explorer) to audit the harness |
+| [`harness-context`](skills/harness-context) | open-harness | Explain harness architecture, layout, and conventions with file citations |
+| [`interview`](skills/interview) | open-harness | Adaptive pre-work clarifier — batches 2–4 task-specific questions, then proceeds |
+| [`render-html`](skills/render-html) | open-harness | Render artifacts as bespoke self-contained HTML for one-shot human review |
+| [`skill-lint`](skills/skill-lint) | skills-meta | Score skills for staleness across 5 dimensions: CURRENT / STALE / BROKEN / DELETE |
 
-See [`docs/checksum.md`](docs/checksum.md) for the checksum algorithm and [`docs/portability.md`](docs/portability.md) for the frontmatter deny-list (stricter than the upstream spec).
+The canonical index — versions, checksums, and `requires-tools` per skill — is [`registry.json`](registry.json).
 
 ---
 
-## Layout
+## ➕ Add a Skill
+
+Adding a new skill takes **under 10 minutes**.
+
+1. **Create the folder** — `mkdir skills/<name>` (lowercase, hyphens, ≤ 64 chars)
+2. **Write the skill** — start from an existing `SKILL.md`; fill in `name`, `description`, and the imperative instruction body
+3. **Add a license** — copy the root `LICENSE` into `skills/<name>/LICENSE`
+4. **Recompute checksums** — `./scripts/refresh-checksums.sh`
+5. **Register the skill** — add an entry to `registry.json` with `name`, `path`, `version`, `description`, `category`, `requires-tools`, `clients`, `license`, `added`, `updated`
+6. **Validate** — `./scripts/validate.sh` must report `PASS`
+7. **Commit** — `skills/<name>/` and `registry.json` in the same commit
+
+Checksum algorithm: [`docs/checksum.md`](docs/checksum.md). Portability rules (Claude Code-specific keys go under `metadata.mifune.claude-code.*`): [`docs/portability.md`](docs/portability.md).
+
+---
+
+## 📁 Layout
 
 | Path | Purpose |
 |------|---------|
-| `registry.json` | Hand-written V0 seed index of Mifune-curated skills (name, version, checksum per entry) |
-| `skills/<name>/` | One subfolder per Mifune-curated skill (`SKILL.md` + optional `scripts/`, `references/`, `assets/`, per-skill `LICENSE`) |
-| `scripts/install.sh` | Bash installer — `curl \| bash` entry point; defaults to `master` branch, overridable via `MIFUNE_REGISTRY_BRANCH` |
-| `scripts/validate.sh` | CI gatekeeper — 19 checks (skills-ref, JSON, registry parity, line count, deny-list, checksum integrity) |
-| `scripts/refresh-checksums.sh` | V0 manual workflow to refresh checksums when a skill file changes |
+| `registry.json` | Canonical index — one entry per skill with version, checksum, and category |
+| `skills/<name>/` | One subfolder per skill (`SKILL.md` + per-skill `LICENSE`) |
+| `scripts/install.sh` | Bash installer — `curl \| bash` entry point |
+| `scripts/validate.sh` | CI gatekeeper — 19 checks: schema, registry parity, checksum integrity |
+| `scripts/refresh-checksums.sh` | Recompute and write checksums back into `registry.json` |
 | `scripts/test-install.sh` | Hermetic test harness for `install.sh` (6 scenarios) |
-| `docs/` | Algorithm + portability documentation |
-| `template/` | Boilerplate for `mifune skills new <name>` (V1) |
-| `.claude-plugin/` | Reserved for V1 `marketplace.json` |
+| `docs/` | Checksum algorithm, portability policy, schema |
+| `template/` | Skill boilerplate for `mifune skills new <name>` (V1) |
 
 ---
 
-## Licensing
+## 🗺️ Roadmap
 
-This repository is licensed under [MIT](LICENSE) at the root.
+| Version | Status | Highlights |
+|---------|--------|------------|
+| **V0** | ✅ Current | 15 skills, hand-written `registry.json`, Bash installer, CI validator |
+| **V1** | 🔵 Planned | TypeScript CLI (`@mifune/skills-cli`), npm + GHCR distribution, `skills.mifune.dev` catalog |
+| **V2** | 🔵 Planned | Sigstore signing, `oh skills` wrapper, standalone binary |
+| **V3** | 🔵 Planned | Community contributions, federated registries |
 
-Each Mifune-curated skill under `skills/<name>/` carries its own [MIT](https://opensource.org/licenses/MIT) `LICENSE` file as a per-skill override. Per-skill license overrides are an explicit affordance of the Agent Skills specification.
+Full design notes: [ryaneggz/open-harness PR #306](https://github.com/ryaneggz/open-harness/pull/306).
 
 ---
 
-## Roadmap
+## ⚖️ License
 
-- **V0 (this release)**: 3 seed skills, hand-written `registry.json`, Bash installer, validator, CI.
-- **V1**: TypeScript CLI (`@mifune/skills-cli`), npm + GHCR distribution, `.claude-plugin/marketplace.json` generator, `skills.mifune.dev` static site.
-- **V2**: Sigstore signing, Open Harness `oh skills` wrapper, standalone binary.
-- **V3**: Community contributions, federated registries.
+This repository is licensed under [MIT](LICENSE).
 
-Full design and milestone acceptance criteria: [ryaneggz/open-harness PR #306](https://github.com/ryaneggz/open-harness/pull/306).
+Each skill in `skills/<name>/` carries its own [MIT](https://opensource.org/licenses/MIT) `LICENSE` file as a per-skill override — an explicit affordance of the Agent Skills specification.
