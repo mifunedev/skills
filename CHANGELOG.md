@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 ## [Unreleased]
 
 ### Added
+- `context-audit` skill (`skills/context-audit/`) — data-backed, repeatable eval for the default-loaded context budget. Tier-1 scores each file on 4 dimensions (footprint, load-bearing, integrity, redundancy) and emits KEEP/TRIM/DEMOTE/CUT verdicts. Tier-2 ablation harness (`runner.sh` + 7 probe files) removes a target file, runs a fixed task suite via `claude -p`, and measures behavior degradation.
 - 13 Mifune-curated skills synced from upstream harness `.claude/skills/`: `agent-browser`, `ci-status`, `delegate`, `harness-audit`, `harness-context`, `post-bridge`, `prd`, `ralph`, `release`, `ship-spec`, `skill-lint`, `strategic-proposal`, `worktrees`.
 - Per-skill `LICENSE` (MIT) file in each new skill directory.
 
