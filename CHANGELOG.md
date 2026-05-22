@@ -13,6 +13,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 - Per-skill `LICENSE` (MIT) file in each new skill directory.
 
 ### Changed
+- `context-audit` skill: removed the top-level `argument-hint` frontmatter key (forbidden by the `skills-ref` portability deny-list) and refreshed its checksum; `scripts/validate.sh` now passes for the full library.
 - `registry.json`: replaced `skills[]` array (3 placeholder entries → 13 current entries, alphabetical), set `license: "MIT"` on every entry, bumped top-level `version` to `2026.5.17`, refreshed all checksums via `scripts/refresh-checksums.sh`.
 - `README.md`: per-skill license callout fixed from Apache-2.0 to MIT (matches root LICENSE).
 - `registry.json` `_v0_note`: removed sentence about the now-deleted `rlm/` directory.
