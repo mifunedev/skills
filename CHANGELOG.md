@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 ## [Unreleased]
 
 ### Added
+- `reflect` skill (`skills/reflect/`) — deliberate whole-session "Improve" pass that operationalizes the Memory Improvement Protocol: scans the current conversation for durable behavioral patterns, applies the qualify filter, classifies survivors by memory tier, and proposes `MEMORY.md` / `IDENTITY.md` additions for explicit confirmation before writing (log-tier entry always appended). Manual-trigger, current-session scope, propose-then-confirm. Indexed in `registry.json` (`open-harness` category).
 - `context-audit` skill (`skills/context-audit/`) — data-backed, repeatable eval for the default-loaded context budget. Tier-1 scores each file on 4 dimensions (footprint, load-bearing, integrity, redundancy) and emits KEEP/TRIM/DEMOTE/CUT verdicts. Tier-2 ablation harness (`runner.sh` + 7 probe files) removes a target file, runs a fixed task suite via `claude -p`, and measures behavior degradation.
 - 13 Mifune-curated skills synced from upstream harness `.claude/skills/`: `agent-browser`, `ci-status`, `delegate`, `harness-audit`, `harness-context`, `post-bridge`, `prd`, `ralph`, `release`, `ship-spec`, `skill-lint`, `strategic-proposal`, `worktrees`.
 - Per-skill `LICENSE` (MIT) file in each new skill directory.

@@ -149,6 +149,19 @@
       "updated": "2026-05-17"
     },
     {
+      "name": "reflect",
+      "path": "skills/reflect",
+      "version": "0.1.0",
+      "checksum": "sha256:9be176e0dc115ab40ea839d1155a3e21a42105553020d5270cc88453f47c270e",
+      "description": "Deliberate whole-session memory pass: scan the current conversation for durable behavioral patterns, run the qualify filter, classify surviving lessons by memory tier, propose MEMORY.md / IDENTITY.md additions for confirmation, then write only what was approved plus the mandatory log entry. Operationalizes the Memory Improvement Protocol (context/rules/memory.md) as an explicit, session-closing skill rather than a per-run afterthought. TRIGGER when: /reflect invoked explicitly, or when the session is closing and contains decisions, surprises, or failure modes worth preserving.",
+      "category": "open-harness",
+      "requires-tools": [],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-22",
+      "updated": "2026-05-22"
+    },
+    {
       "name": "release",
       "path": "skills/release",
       "version": "0.1.0",
