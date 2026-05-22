@@ -79,6 +79,19 @@
       "updated": "2026-05-17"
     },
     {
+      "name": "interview",
+      "path": "skills/interview",
+      "version": "0.1.0",
+      "checksum": "sha256:dfd10b92f14ce0ce5cc8237af53eca360dca25f22fdc4f5c1d3cba552386f372",
+      "description": "Adaptive pre-work clarifier. Picks 2–4 task-specific questions via AskUserQuestion, echoes a brief scope summary, then proceeds. Refuses for trivial tasks. TRIGGER when: /interview invoked explicitly, OR before non-trivial work where scope/intent/constraints are ambiguous AND the user hasn't already specified them.",
+      "category": "open-harness",
+      "requires-tools": [],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-22",
+      "updated": "2026-05-22"
+    },
+    {
       "name": "post-bridge",
       "path": "skills/post-bridge",
       "version": "0.1.0",
@@ -135,6 +148,19 @@
       "license": "MIT",
       "added": "2026-05-17",
       "updated": "2026-05-17"
+    },
+    {
+      "name": "render-html",
+      "path": "skills/render-html",
+      "version": "0.1.0",
+      "checksum": "sha256:2be4f3185771529eef7aae9b809b6967827698bd037a4af1f17d24c3bc510183",
+      "description": "Render an artifact (or in-context material) as a bespoke, self-contained HTML file for one-shot human consumption. Writes to memory/<UTC-date>/<slug>.html. Output is gitignored — these are consumption artifacts, not source. TRIGGER when: asked to render HTML, generate an HTML report, visualize an audit/council/lint/digest, \"make this readable\", \"make a dashboard for\", or as a follow-up to /harness-audit, /strategic-proposal, /skill-lint.",
+      "category": "open-harness",
+      "requires-tools": [],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-05-22",
+      "updated": "2026-05-22"
     },
     {
       "name": "ship-spec",
