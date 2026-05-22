@@ -41,7 +41,7 @@
       "name": "context-audit",
       "path": "skills/context-audit",
       "version": "0.1.0",
-      "checksum": "sha256:53667528b352d239470147611a97d5882c05edca82c22c86fdaccaf36b9c7b05",
+      "checksum": "sha256:02dd6324bb7ab62331a42fa414e2325bbb293c4e6f0ebb8aeead09f3948595a1",
       "description": "Score the default-loaded context budget across 4 dimensions and emit KEEP/TRIM/DEMOTE/CUT verdicts per file. Optional Tier-2 ablation harness removes a target file, runs a fixed probe suite via claude -p, and measures behavior degradation — the only provably safe gate for cutting load-bearing content. TRIGGER when: asked to audit context window, check default context load, evaluate rules for signal vs noise, or before/after any change to context/rules/ or CLAUDE.md.",
       "category": "open-harness",
       "requires-tools": [
