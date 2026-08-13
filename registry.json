@@ -3,7 +3,7 @@
   "$schema": "./docs/schema/registry.v1.json",
   "name": "mifunedev-skills",
   "description": "Cross-agent skill library curated by Mifune Dev.",
-  "version": "2026.5.17",
+  "version": "2026.8.12",
   "owner": {
     "name": "Mifune Dev",
     "url": "https://mifune.dev"
@@ -219,6 +219,19 @@
       "license": "MIT",
       "added": "2026-05-17",
       "updated": "2026-05-17"
+    },
+    {
+      "name": "ste",
+      "path": "skills/ste",
+      "version": "0.1.0",
+      "checksum": "sha256:7ed2082def096697e786f4007a743451baa4a0fc9ff26f80e19b40f2d29d2109",
+      "description": "Write and rewrite technical prose in Simplified Technical English style: short declarative sentences, active voice, imperative procedures, one term per concept, no hedges, and explicit conditions. Never simplifies code, commands, identifiers, paths, or quoted literals. Marks missing values with a placeholder rather than inventing one. Ships a deterministic checker. TRIGGER when: asked to write, rewrite, simplify, clarify, tighten, or review documentation, a README, a runbook, a spec, release notes, a PR or commit body, an error message, CLI help text, an API description, or agent instructions; or when asked for plain English, controlled language, STE, Simplified Technical English, or \"make this unambiguous\".",
+      "category": "dev-workflow",
+      "requires-tools": [],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-08-12",
+      "updated": "2026-08-12"
     },
     {
       "name": "strategic-proposal",
