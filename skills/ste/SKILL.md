@@ -93,14 +93,11 @@ a compressed draft to STE rules before you commit the draft, post the draft, or
 write the draft to disk. Never run a compression pass against a file that `/ste`
 governs.
 
-Two clauses hold in both directions. Keep them whichever mode runs:
+Two clauses hold whichever mode runs:
 
 - never compress code, commands, identifiers, or error strings;
 - drop back to plain prose for security warnings and for irreversible-action
   confirmations.
-
-Open Harness ships that compression mode as `/caveman`, which already states
-both clauses. `/ste` adopts them by reference rather than restating them.
 
 ## Rewrite mode
 
@@ -282,7 +279,8 @@ pattern, or a checker gap worth closing. Record `no durable finding` when
 nothing surfaced. Otherwise check `MEMORY.md` and `IDENTITY.md` for duplication,
 then use the propose-then-confirm gate in `/retro` to append one lesson.
 
-See `.oh/skills/retro/references/memory-protocol.md` for the canonical protocol.
+In an Open Harness checkout, `.oh/skills/retro/references/memory-protocol.md` holds the
+canonical protocol. Outside one, the guard above makes this section a no-op. Skip it.
 
 ## Reference
 

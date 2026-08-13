@@ -224,7 +224,7 @@
       "name": "ste",
       "path": "skills/ste",
       "version": "0.1.0",
-      "checksum": "sha256:a3a4bb0912d9ae841e17de3b22fcb75a8377426dc8a5fe72bb7f4f621ddea436",
+      "checksum": "sha256:7ed2082def096697e786f4007a743451baa4a0fc9ff26f80e19b40f2d29d2109",
       "description": "Write and rewrite technical prose in Simplified Technical English style: short declarative sentences, active voice, imperative procedures, one term per concept, no hedges, and explicit conditions. Never simplifies code, commands, identifiers, paths, or quoted literals. Marks missing values with a placeholder rather than inventing one. Ships a deterministic checker. TRIGGER when: asked to write, rewrite, simplify, clarify, tighten, or review documentation, a README, a runbook, a spec, release notes, a PR or commit body, an error message, CLI help text, an API description, or agent instructions; or when asked for plain English, controlled language, STE, Simplified Technical English, or \"make this unambiguous\".",
       "category": "dev-workflow",
       "requires-tools": [],
