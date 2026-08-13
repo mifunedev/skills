@@ -194,7 +194,7 @@
       "name": "ship-spec",
       "path": "skills/ship-spec",
       "version": "0.1.0",
-      "checksum": "sha256:466db74d894841698ac1ad37643373f676c4be84b05028ffd4a1d19a82290620",
+      "checksum": "sha256:650b34e378304a1980ba7a780504ce1d3569f1d62c859c90cd9450ee9763df4a",
       "description": "Compose /prd → 2 critics → /ralph → gh issue → branch → draft PR into a single end-to-end invocation. Produces a fully-scaffolded task ready for the Ralph runner, plus an open draft PR for observability. TRIGGER when: asked to scaffold a spec end-to-end, \"ship a spec\", \"set up a task PR\", or after planning a feature and ready to formalize. v1 stops at draft PR creation; loop launch + CI verification stay manual.",
       "category": "orchestration",
       "requires-tools": [
@@ -224,7 +224,7 @@
       "name": "ste",
       "path": "skills/ste",
       "version": "0.1.0",
-      "checksum": "sha256:7ed2082def096697e786f4007a743451baa4a0fc9ff26f80e19b40f2d29d2109",
+      "checksum": "sha256:860641f67af269f5ffda8d023fdf3129f8b7bc94c6e4658b23bc66334124b3e6",
       "description": "Write and rewrite technical prose in Simplified Technical English style: short declarative sentences, active voice, imperative procedures, one term per concept, no hedges, and explicit conditions. Never simplifies code, commands, identifiers, paths, or quoted literals. Marks missing values with a placeholder rather than inventing one. Ships a deterministic checker. TRIGGER when: asked to write, rewrite, simplify, clarify, tighten, or review documentation, a README, a runbook, a spec, release notes, a PR or commit body, an error message, CLI help text, an API description, or agent instructions; or when asked for plain English, controlled language, STE, Simplified Technical English, or \"make this unambiguous\".",
       "category": "dev-workflow",
       "requires-tools": [],

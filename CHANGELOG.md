@@ -14,6 +14,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 - Per-skill `LICENSE` (MIT) file in each new skill directory.
 
 ### Changed
+- `ship-spec` and `ste` skills: removed every reference to a file or a command an installer does not have, and refreshed both checksums. `ship-spec/SKILL.md` named `scripts/ralph.sh` at three backticked sites and once more in the stage diagram; the published folder ships no `scripts/` directory, so all four now name the loop runner that the host repository supplies. `ste/SKILL.md` named `/retro`, which this registry publishes under the name `reflect`, and pointed at a harness-only memory-protocol path; both now name the `/reflect` skill, which holds that protocol. The Open Harness portability lint (openharness#758) reported the five backticked cases; the diagram reference is the same defect in a form that lint does not read. That check now reports no unresolvable reference in any of the 18 published skills.
 - `context-audit` skill: removed the top-level `argument-hint` frontmatter key (forbidden by the `skills-ref` portability deny-list) and refreshed its checksum; `scripts/validate.sh` now passes for the full library.
 - `registry.json`: replaced `skills[]` array (3 placeholder entries → 13 current entries, alphabetical), set `license: "MIT"` on every entry, bumped top-level `version` to `2026.5.17`, refreshed all checksums via `scripts/refresh-checksums.sh`.
 - `README.md`: per-skill license callout fixed from Apache-2.0 to MIT (matches root LICENSE).

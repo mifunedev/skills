@@ -27,7 +27,7 @@ flowchart TD
     F --> G["7. Scaffold prompt.md + progress.txt"]
     G --> H["8. Branch + commit + push"]
     H --> I["9. gh pr create --draft"]
-    I --> J["v2: scripts/ralph.sh → tmux loop<br/>→ /ci-status → gh pr ready"]
+    I --> J["v2: loop runner → tmux loop<br/>→ /ci-status → gh pr ready"]
 
     style J stroke-dasharray: 5 5
 ```
@@ -259,7 +259,7 @@ Closes #<N>.
 - Recommendation: <from critique.md>
 
 ## Next steps (manual)
-1. \`scripts/ralph.sh <slug>\` — launch the loop in tmux
+1. Launch your loop runner in tmux for \`<slug>\`
 2. Monitor: \`tmux attach -t <slug>\` or \`tail -f tasks/<slug>/progress.txt\`
 3. After STATUS: COMPLETE: \`git push && gh pr ready <pr-number> && /ci-status\`
 
@@ -306,7 +306,7 @@ The whole pipeline can be re-invoked safely. Failed stage = fix + re-run; resume
 | Stage | v1 (this skill) | v2 (future) |
 |---|---|---|
 | 1–9 | ✓ included | unchanged |
-| 10 | manual: `scripts/ralph.sh <slug>` | auto-launch tmux loop |
+| 10 | manual: launch the loop runner for `<slug>` | auto-launch tmux loop |
 | 11 | manual: tail progress.txt | auto-poll for `STATUS: COMPLETE` |
 | 12 | manual: `git push` | auto-push iteration commits |
 | 13 | manual: `gh pr ready <M>` | auto-promote when STATUS: COMPLETE + CI green |
@@ -337,7 +337,7 @@ v1 stops at draft PR because the loop launch is the highest-blast-radius step in
 | `/prd` skill | `.claude/skills/prd/SKILL.md` | Stage 2 — markdown PRD generation |
 | `critic` agent | `.claude/agents/critic.md` | Stage 4 — adversarial review |
 | `/ralph` skill | `.claude/skills/ralph/SKILL.md` | Stage 6 — markdown → JSON conversion |
-| `scripts/ralph.sh` | `scripts/ralph.sh` | (v2 — loop launcher) |
+| Ralph loop runner | supplied by the host repository | (v2 — loop launcher) |
 | `/ci-status` skill | `.claude/skills/ci-status/SKILL.md` | (v2 — CI verification) |
 | advisor-model rule | `.claude/rules/advisor-model.md` | Critic-gate pattern (3-step variant) |
 | Protected-paths list | `.claude/protected-paths.txt` | Stage 3 — load-bearing items critics must not propose deleting |

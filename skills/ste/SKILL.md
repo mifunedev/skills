@@ -277,10 +277,10 @@ fi
 Ask whether a rewrite exposed an undocumented coupling, a recurring ambiguity
 pattern, or a checker gap worth closing. Record `no durable finding` when
 nothing surfaced. Otherwise check `MEMORY.md` and `IDENTITY.md` for duplication,
-then use the propose-then-confirm gate in `/retro` to append one lesson.
+then use the propose-then-confirm gate in `/reflect` to append one lesson.
 
-In an Open Harness checkout, `.oh/skills/retro/references/memory-protocol.md` holds the
-canonical protocol. Outside one, the guard above makes this section a no-op. Skip it.
+The `/reflect` skill holds the canonical protocol. Outside an Open Harness
+checkout, the guard above makes this section a no-op. Skip it.
 
 ## Reference
 
