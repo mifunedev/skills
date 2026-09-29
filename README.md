@@ -60,6 +60,8 @@ The installer pins the registry commit SHA in `.mifune/skills.lock` — re-insta
 | [`ralph`](skills/ralph) | orchestration | Convert PRDs to `prd.json` for the Ralph autonomous agent runner |
 | [`ship-spec`](skills/ship-spec) | orchestration | End-to-end scaffold: `/prd` → critics → `/ralph` → issue → branch → draft PR |
 | [`strategic-proposal`](skills/strategic-proposal) | orchestration | 5-expert council + Critic for roadmap planning and prioritization |
+| [`jev`](skills/jev) | integration | Typed choice, yes/no, and score judgments from TypeSafe Jev, the hosted System One model |
+| [`laya`](skills/laya) | integration | Self-host Laya, an open-weight System One model, and pilot it against Jev |
 | [`post-bridge`](skills/post-bridge) | integration | Publish posts, upload media, and schedule content via the Post Bridge API |
 | [`harness-audit`](skills/harness-audit) | open-harness | Spawn 4 parallel sub-agents (PM/Implementer/Critic/Explorer) to audit the harness |
 | [`harness-context`](skills/harness-context) | open-harness | Explain harness architecture, layout, and conventions with file citations |
