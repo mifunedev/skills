@@ -59,8 +59,8 @@ The installer pins the registry commit SHA in `.mifune/skills.lock` — re-insta
 | [`delegate`](skills/delegate) | orchestration | Parallel execution coordinator — decomposes plans into wave-executed sub-agents |
 | [`system-one`](skills/system-one) | integration | Typed choice, yes/no, and score judgments from System One: Jev by default, self-hosted Laya as the alternative |
 | [`post-bridge`](skills/post-bridge) | integration | Publish posts, upload media, and schedule content via the Post Bridge API |
-| [`agro-host-matrix`](skills/agro-host-matrix) | open-harness | Validate AGRO on real VMs (Vercel Sandbox, exe.dev, agro-console) with a reproducible 15-row matrix |
-| [`interview`](skills/interview) | open-harness | Adaptive pre-work clarifier — batches 2–4 task-specific questions, then proceeds |
+| [`agro-host-matrix`](skills/agro-host-matrix) | agro | Validate AGRO on real VMs (Vercel Sandbox, exe.dev, agro-console) with a reproducible 15-row matrix |
+| [`interview`](skills/interview) | agro | Adaptive pre-work clarifier — batches 2–4 task-specific questions, then proceeds |
 
 The canonical index — versions, checksums, and `requires-tools` per skill — is [`registry.json`](registry.json).
 

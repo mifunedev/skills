@@ -16,7 +16,7 @@ assignees: ''
 
 ## Category
 
-<!-- One of: open-harness, dev-workflow, code-review, cloud-ops, docs, experimental -->
+<!-- One of: agro, dev-workflow, code-review, cloud-ops, docs, experimental -->
 
 ## Required tools
 

@@ -18,7 +18,7 @@ license: MIT
 compatibility: Needs bash, ssh, curl, jq, awk, and tmux on the driver host, plus an account on each provider under test (vercel CLI, an exe.dev SSH key, or a local agro-console stack).
 metadata:
   mifune:
-    category: open-harness
+    category: agro
     requires-tools: ["bash", "ssh", "curl", "jq", "awk", "tmux"]
 ---
 
