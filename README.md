@@ -22,7 +22,7 @@
 A portable, cross-agent skill library for [Claude Code](https://claude.ai/code) and compatible AI agents.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-15-brightgreen)](registry.json)
+[![Skills](https://img.shields.io/badge/skills-14-brightgreen)](registry.json)
 
 </div>
 
@@ -47,7 +47,7 @@ The installer pins the registry commit SHA in `.mifune/skills.lock` — re-insta
 
 ## 📦 Skill Catalog
 
-15 skills across 4 categories:
+14 skills across 5 categories:
 
 | Skill | Category | Description |
 |-------|----------|-------------|
@@ -57,16 +57,10 @@ The installer pins the registry commit SHA in `.mifune/skills.lock` — re-insta
 | [`release`](skills/release) | dev-workflow | Cut a CalVer release: version, tag, push, CI poll, verify image |
 | [`worktrees`](skills/worktrees) | dev-workflow | Manage `.worktrees/` lifecycle: create, list, remove, clean, audit |
 | [`delegate`](skills/delegate) | orchestration | Parallel execution coordinator — decomposes plans into wave-executed sub-agents |
-| [`ralph`](skills/ralph) | orchestration | Convert PRDs to `prd.json` for the Ralph autonomous agent runner |
-| [`ship-spec`](skills/ship-spec) | orchestration | End-to-end scaffold: `/prd` → critics → `/ralph` → issue → branch → draft PR |
-| [`strategic-proposal`](skills/strategic-proposal) | orchestration | 5-expert council + Critic for roadmap planning and prioritization |
 | [`jev`](skills/jev) | integration | Typed choice, yes/no, and score judgments from TypeSafe Jev, the hosted System One model |
 | [`laya`](skills/laya) | integration | Self-host Laya, an open-weight System One model, and pilot it against Jev |
 | [`post-bridge`](skills/post-bridge) | integration | Publish posts, upload media, and schedule content via the Post Bridge API |
-| [`harness-audit`](skills/harness-audit) | open-harness | Spawn 4 parallel sub-agents (PM/Implementer/Critic/Explorer) to audit the harness |
-| [`harness-context`](skills/harness-context) | open-harness | Explain harness architecture, layout, and conventions with file citations |
 | [`interview`](skills/interview) | open-harness | Adaptive pre-work clarifier — batches 2–4 task-specific questions, then proceeds |
-| [`render-html`](skills/render-html) | open-harness | Render artifacts as bespoke self-contained HTML for one-shot human review |
 | [`skill-lint`](skills/skill-lint) | skills-meta | Score skills for staleness across 5 dimensions: CURRENT / STALE / BROKEN / DELETE |
 
 The canonical index — versions, checksums, and `requires-tools` per skill — is [`registry.json`](registry.json).
@@ -108,7 +102,7 @@ Checksum algorithm: [`docs/checksum.md`](docs/checksum.md). Portability rules (C
 
 | Version | Status | Highlights |
 |---------|--------|------------|
-| **V0** | ✅ Current | 15 skills, hand-written `registry.json`, Bash installer, CI validator |
+| **V0** | ✅ Current | 14 skills, hand-written `registry.json`, Bash installer, CI validator |
 | **V1** | 🔵 Planned | TypeScript CLI (`@mifune/skills-cli`), npm + GHCR distribution, `skills.mifune.dev` catalog |
 | **V2** | 🔵 Planned | Sigstore signing, `oh skills` wrapper, standalone binary |
 | **V3** | 🔵 Planned | Community contributions, federated registries |

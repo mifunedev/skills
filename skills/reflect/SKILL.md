@@ -24,7 +24,6 @@ This is the deliberate "Improve" pass of the Memory Improvement Protocol defined
 
 ## When NOT to use
 
-- **`/harness-audit`** — audits harness code health via four parallel sub-agents. That is a structural audit, not a behavioral/conversational pass.
 - **`/context-audit`** — scores the default-loaded context budget across four dimensions. It trims files, not behaviors.
 - **`/skill-lint`** — scores individual skills for staleness. It reviews skill quality, not session outcomes.
 - **Trivial sessions** — if the session contained only mechanical read-only queries or single-command invocations with no surprises, announce the skip and proceed to log.
