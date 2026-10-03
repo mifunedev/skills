@@ -79,40 +79,6 @@
       "updated": "2026-05-22"
     },
     {
-      "name": "jev",
-      "path": "skills/jev",
-      "version": "0.1.0",
-      "checksum": "sha256:74d5927c00bcff9baac4ee11f331cfdc957e3c4b2706c0ddae71203624e57016",
-      "description": "Get typed judgments from TypeSafe Jev, a hosted System One model that answers choice, yes/no (noul), and score questions about text or JSON state with probabilities instead of generated prose. Use when code needs semantic understanding it cannot compute: routing, triage, ranking, extraction by selection, verification, or confidence-gated escalation. Also use to replace an LLM prompt-and-parse step with a structured decision. TRIGGER when: asked to use Jev, TypeSafe, or System One; to classify, route, triage, score, or verify text with a typed answer; or to compare Jev with another System One backend such as Laya.",
-      "category": "integration",
-      "requires-tools": [
-        "curl",
-        "jq"
-      ],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-09-28",
-      "updated": "2026-09-28"
-    },
-    {
-      "name": "laya",
-      "path": "skills/laya",
-      "version": "0.1.0",
-      "checksum": "sha256:fc2cfe88706fb422455390580e3d121a08e024acf6cd8cc0b3888df0c099d154",
-      "description": "Run Laya, an open-weight (Apache-2.0) System One decision model, as a local HTTP server and get typed choice, yes/no (noul), and score judgments from it with no hosted API. Laya speaks the same /v1/systemone protocol as TypeSafe Jev. Use when data must stay on the machine, the environment is offline, decision volume is high, or you plan to fine-tune a decision model on your own labels; and to pilot a local backend against Jev on a real workload. TRIGGER when: asked to use Laya, run laya-serve, self-host a System One or Jev-compatible model, get typed decisions locally, or compare Laya with Jev.",
-      "category": "integration",
-      "requires-tools": [
-        "curl",
-        "jq",
-        "python3",
-        "tmux"
-      ],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-09-28",
-      "updated": "2026-09-28"
-    },
-    {
       "name": "post-bridge",
       "path": "skills/post-bridge",
       "version": "0.1.0",
@@ -169,6 +135,22 @@
       "license": "MIT",
       "added": "2026-08-12",
       "updated": "2026-08-12"
+    },
+    {
+      "name": "system-one",
+      "path": "skills/system-one",
+      "version": "0.1.0",
+      "checksum": "sha256:2d844c2b8decb6d7dd0e086f65702a10728102c399bac591977beb81960ebe8c",
+      "description": "Get typed choice, yes/no (noul), and score judgments from a System One model about text or JSON state, with probabilities instead of prose. Jev, the hosted TypeSafe model, is the default backend; Laya is the self-hosted alternative on the same /v1/systemone protocol. TRIGGER when: asked to use System One, Jev, TypeSafe, or Laya; to classify, route, triage, score, or verify text with a typed answer; or to self-host or compare System One backends.",
+      "category": "integration",
+      "requires-tools": [
+        "curl",
+        "jq"
+      ],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-10-03",
+      "updated": "2026-10-03"
     },
     {
       "name": "worktrees",

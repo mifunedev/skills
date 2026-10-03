@@ -1,51 +1,20 @@
----
-name: laya
-description: |
-  Run Laya, an open-weight (Apache-2.0) System One decision model, as a
-  local HTTP server and get typed choice, yes/no (noul), and score judgments
-  from it with no hosted API. Laya speaks the same /v1/systemone protocol as
-  TypeSafe Jev. Use when data must stay on the machine, the environment is
-  offline, decision volume is high, or you plan to fine-tune a decision model
-  on your own labels; and to pilot a local backend against Jev on a real
-  workload. TRIGGER when: asked to use Laya, run laya-serve, self-host a
-  System One or Jev-compatible model, get typed decisions locally, or compare
-  Laya with Jev.
-license: MIT
-compatibility: Needs Python 3.10+, about 8 GB free RAM and 8 GB disk for CPU inference; a CUDA GPU is optional.
-metadata:
-  mifune:
-    category: integration
-    requires-tools: ["curl", "jq", "python3", "tmux"]
----
+# Laya — the self-hosted System One backend
 
-# Laya — local System One judgments
+## Contents
 
-Laya reads a `state` and a map of typed `questions`, then returns one typed
-answer per question in a single encoder pass. It generates no text. Its server,
-`laya-serve`, accepts the same request body as TypeSafe Jev on
-`POST /v1/systemone`.
+1. [Check the hardware](#check-the-hardware)
+2. [Start the server](#start-the-server)
+3. [Ask a question](#ask-a-question)
+4. [Read the answers correctly](#read-the-answers-correctly)
+5. [Avoid the known failure modes](#avoid-the-known-failure-modes)
+6. [Pilot Laya against Jev](#pilot-laya-against-jev)
 
-Source and full docs: <https://github.com/NandhaKishorM/laya>. Read the
-README section "Self-Hosting: HTTP Server" before you change server settings.
+Laya is an open-weight (Apache-2.0) System One model. Laya answers each request
+in a single encoder pass. Its server, `laya-serve`, accepts the same request
+body as Jev on `POST /v1/systemone`.
 
-## Decide whether Laya fits
-
-Use Laya when one of these is true:
-
-- The state must not leave the machine.
-- The environment has no internet access.
-- Volume is high enough that per-token cost or network latency matters.
-- You have labeled data and will fine-tune or fit calibration temperatures.
-
-Prefer a hosted model such as Jev when one of these is true:
-
-- A `choice` has more than about 20 options. Laya's options share a fixed token
-  budget, and accuracy falls sharply past that point.
-- The task is new and unlabeled. The base checkpoints are close to chance on
-  zero-shot typed decisions; the published high scores come from fine-tuned
-  checkpoints.
-- No GPU is available and latency matters. CPU inference takes about
-  200 to 460 ms per request, which is close to hosted Jev.
+Source and full docs: <https://github.com/NandhaKishorM/laya>. Read the README
+section "Self-Hosting: HTTP Server" before you change server settings.
 
 ## Check the hardware
 
@@ -76,7 +45,7 @@ need it, and set `LAYA_API_KEY` if they do.
 ```bash
 tmux new-session -d -s laya-serve \
   'LAYA_HOST=127.0.0.1 LAYA_PORT=8000 LAYA_PRELOAD=1 LAYA_MODELS=english,multilingual ~/.venvs/laya/bin/laya-serve'
-bash scripts/ask.sh --check
+bash scripts/ask.sh --backend laya --check
 ```
 
 The first start downloads the checkpoints from Hugging Face. Watch progress
@@ -119,7 +88,7 @@ pick a checkpoint by language, or set it to `english`, `multilingual`, or
 ```
 
 ```bash
-bash scripts/ask.sh request.json | jq '.answers'
+bash scripts/ask.sh --backend laya request.json | jq '.answers'
 ```
 
 The script prints the response on stdout and `latency_ms=<n>` on stderr. It
@@ -158,7 +127,7 @@ see the `laya-ts/` directory in the Laya repository.
 6. **Language.** The English checkpoint fails on non-Latin scripts while it
    stays confident. Let the router choose, or name `multilingual`.
 
-## Pilot it against Jev
+## Pilot Laya against Jev
 
 The same request file works on both backends, so a pilot compares like with
 like.
@@ -166,12 +135,13 @@ like.
 1. Pick one workload with ground truth, for example issues or tickets that
    already carry labels. Use at least 100 cases.
 2. Write one request per case with the same questions.
-3. Run each request through `bash scripts/ask.sh` here and through Jev's
-   hosted API. Save the responses and `latency_ms`.
+3. Run each request through `bash scripts/ask.sh --backend laya` and
+   through `bash scripts/ask.sh --backend jev`. Save the responses and `latency_ms`.
 4. Record per backend: accuracy against the labels, p50 and p95 latency,
    accuracy at a fixed `answer_confidence` threshold, and failures grouped by
    cause (option count, negation, language, length).
 5. Record the host: CPU or GPU, free RAM, disk used, and cold-start time.
 
 Adopt Laya for a workload only when its accuracy is acceptable on that
-workload's data and one of the fit conditions above holds.
+workload's data and one Laya condition in "Choose the backend" in `SKILL.md`
+holds.

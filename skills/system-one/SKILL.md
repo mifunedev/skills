@@ -1,29 +1,58 @@
 ---
-name: jev
+name: system-one
 description: |
-  Get typed judgments from TypeSafe Jev, a hosted System One model that
-  answers choice, yes/no (noul), and score questions about text or JSON state
-  with probabilities instead of generated prose. Use when code needs
-  semantic understanding it cannot compute: routing, triage, ranking,
-  extraction by selection, verification, or confidence-gated escalation.
-  Also use to replace an LLM prompt-and-parse step with a structured
-  decision. TRIGGER when: asked to use Jev, TypeSafe, or System One; to
-  classify, route, triage, score, or verify text with a typed answer; or to
-  compare Jev with another System One backend such as Laya.
+  Get typed judgments from a System One model: choice, yes/no (noul), and
+  score answers about text or JSON state, with probabilities instead of
+  generated prose. Jev, the hosted TypeSafe model, is the default backend.
+  Laya, an open-weight model behind the same /v1/systemone protocol, is the
+  self-hosted alternative for private, offline, or high-volume work. Use when
+  code needs semantic understanding it cannot compute: routing, triage,
+  ranking, extraction by selection, verification, or confidence-gated
+  escalation, or to replace an LLM prompt-and-parse step with a structured
+  decision. TRIGGER when: asked to use System One, Jev, TypeSafe, or Laya; to
+  classify, route, triage, score, or verify text with a typed answer; to run
+  laya-serve or self-host a Jev-compatible model; or to compare backends.
 license: MIT
-compatibility: Needs network access to api.typesafe.ai and a TypeSafe API key.
+compatibility: Jev needs network access to api.typesafe.ai and a TypeSafe API key. Laya needs Python 3.10+, about 8 GB free RAM, and 8 GB disk for CPU inference.
 metadata:
   mifune:
     category: integration
     requires-tools: ["curl", "jq"]
 ---
 
-# Jev — hosted System One judgments
+# System One — typed judgments from Jev or Laya
 
-Jev reads a `state` and a map of typed `questions`, then returns one typed
-answer per question with its probability distribution. It does not generate
-text. Code owns the workflow; Jev supplies the judgments that ordinary code
-cannot make.
+A System One model reads a `state` and a map of typed `questions`, then returns
+one typed answer per question with its probability distribution. The model does
+not generate text. Code owns the workflow; the model supplies the judgments that
+ordinary code cannot make.
+
+**Jev is the default.** Use Jev unless a Laya condition in "Choose the backend"
+holds. Both backends accept the same request file on `POST /v1/systemone`, and
+`scripts/ask.sh` talks to both:
+
+```bash
+bash scripts/ask.sh request.json                  # Jev
+bash scripts/ask.sh --backend laya request.json   # Laya
+```
+
+`SYSTEM_ONE_BACKEND=laya` makes Laya the default for a shell.
+
+## Choose the backend
+
+| Condition | Backend |
+| --- | --- |
+| No condition below holds | Jev |
+| The state must not leave the machine | Laya |
+| The environment has no internet access | Laya |
+| Volume is high enough that per-token cost or network latency matters | Laya |
+| You have labels and will fine-tune or fit calibration temperatures | Laya |
+| A `choice` has more than about 20 options | Jev |
+| The task is new and unlabeled | Jev. The Laya base checkpoints are close to chance on zero-shot typed decisions. |
+| No GPU, and latency matters | Jev. Laya on CPU takes 200 to 460 ms per request, close to hosted Jev. |
+
+Before you use Laya, read `references/laya.md`. That file covers hardware, the
+server, Laya answer fields, failure modes, and the pilot against Jev.
 
 ## Check the configuration first
 
@@ -32,9 +61,12 @@ bash scripts/ask.sh --check          # is TYPESAFE_API_KEY set?
 bash scripts/ask.sh --check --live   # does the key work?
 ```
 
-Report the output to the operator verbatim. An unset key is a configuration
-fact, not a failure: say what is missing, then continue with work that does not
-need Jev.
+For Laya, run `bash scripts/ask.sh --backend laya --check`. The command reads
+the health endpoint of the server.
+
+Report the output to the operator verbatim. An unset key or a stopped server is
+a configuration fact, not a failure: say what is missing, then continue with
+work that does not need System One.
 
 ## Read the live docs
 
@@ -57,7 +89,8 @@ If live access fails, say so and do not invent version-specific details.
 
 ## Ask a question
 
-Write the request as JSON. `model` defaults to `jev-latest`.
+Write the request as JSON. On Jev, `model` defaults to `jev-latest`. On Laya,
+omit `model` to let the router pick a checkpoint.
 
 ```json
 {
@@ -90,8 +123,8 @@ bash scripts/ask.sh request.json | jq '.answers'
 ```
 
 The script prints the response on stdout and `latency_ms=<n>` on stderr. It
-retries HTTP 429 and 529 three times. It exits `1` on a failed request and names
-the cause.
+retries HTTP 429 and 529 on Jev and HTTP 503 on Laya, three times. It exits `1`
+on a failed request and names the cause.
 
 In application code, use the SDK (`npm install @typesafe-ai/sdk` or the Python
 SDK) instead of the script. Keep the API key on the server side.
@@ -128,7 +161,7 @@ SDK) instead of the script. Keep the API key on the server side.
 
 ## Act on uncertainty
 
-- `confidence` on `choice` and `score` measures how concentrated the
+- On Jev, `confidence` on `choice` and `score` measures how concentrated the
   distribution is. It is not proof that the answer is correct, and it is not
   permission to act.
 - A `noul` near 0.5 means yes and no are equally likely. It does not mean
@@ -147,7 +180,7 @@ SDK) instead of the script. Keep the API key on the server side.
 3. Record accuracy, latency (`latency_ms`), and token usage (`usage`) per
    workload. Use these numbers, not demo results, to decide adoption.
 
-The request format is the System One wire protocol. A self-hosted server that
-speaks it, such as Laya, accepts the same request file, which makes a direct
-comparison possible. Confidence values differ between backends, so do not reuse
-a Jev threshold on another backend.
+Confidence values differ between backends. On Laya, gate on
+`answer_confidence`, not `confidence`, and never reuse a Jev threshold. To
+compare backends on one workload, follow "Pilot Laya against Jev" in
+`references/laya.md`.
