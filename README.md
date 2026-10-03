@@ -22,7 +22,7 @@
 A portable, cross-agent skill library for [Claude Code](https://claude.ai/code) and compatible AI agents.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-12-brightgreen)](registry.json)
+[![Skills](https://img.shields.io/badge/skills-11-brightgreen)](registry.json)
 
 </div>
 
@@ -47,7 +47,7 @@ The installer pins the registry commit SHA in `.mifune/skills.lock` — re-insta
 
 ## 📦 Skill Catalog
 
-12 skills across 4 categories:
+11 skills across 4 categories:
 
 | Skill | Category | Description |
 |-------|----------|-------------|
@@ -55,6 +55,7 @@ The installer pins the registry commit SHA in `.mifune/skills.lock` — re-insta
 | [`ci-status`](skills/ci-status) | dev-workflow | Poll CI after push; reports pass/fail with failure details |
 | [`prd`](skills/prd) | dev-workflow | Generate a Product Requirements Document for a new feature |
 | [`release`](skills/release) | dev-workflow | Cut a CalVer release: version, tag, push, CI poll, verify image |
+| [`ste`](skills/ste) | dev-workflow | Write technical prose in Simplified Technical English, with a deterministic checker |
 | [`worktrees`](skills/worktrees) | dev-workflow | Manage `.worktrees/` lifecycle: create, list, remove, clean, audit |
 | [`delegate`](skills/delegate) | orchestration | Parallel execution coordinator — decomposes plans into wave-executed sub-agents |
 | [`system-one`](skills/system-one) | integration | Typed choice, yes/no, and score judgments from System One: Jev by default, self-hosted Laya as the alternative |
@@ -101,7 +102,7 @@ Checksum algorithm: [`docs/checksum.md`](docs/checksum.md). Portability rules (C
 
 | Version | Status | Highlights |
 |---------|--------|------------|
-| **V0** | ✅ Current | 12 skills, hand-written `registry.json`, Bash installer, CI validator |
+| **V0** | ✅ Current | 11 skills, hand-written `registry.json`, Bash installer, CI validator |
 | **V1** | 🔵 Planned | TypeScript CLI (`@mifune/skills-cli`), npm + GHCR distribution, `skills.mifune.dev` catalog |
 | **V2** | 🔵 Planned | Sigstore signing, `oh skills` wrapper, standalone binary |
 | **V3** | 🔵 Planned | Community contributions, federated registries |

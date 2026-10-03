@@ -8,7 +8,7 @@ assignees: ''
 
 ## Affected skill
 
-<!-- Folder name under skills/, e.g. open-harness-review -->
+<!-- Folder name under skills/, e.g. agro-host-matrix -->
 
 ## What happened
 

@@ -1,6 +1,6 @@
 # STE Rules
 
-This file holds the writing rules for the `/ste` controlled-language standard, which governs technical prose in the Open Harness repo. The rules follow the published shape of ASD-STE100: a numbered rule set plus a controlled dictionary of approved words. Every rule statement below carries original wording, quotes no published text, and claims no compliance or certification. The linter `scripts/ste-check.sh` enforces the mechanical subset of these rules, and `SKILL.md` holds the entry procedure.
+This file holds the writing rules for the `/ste` controlled-language standard, which governs technical prose in the AGRO repo. The rules follow the published shape of ASD-STE100: a numbered rule set plus a controlled dictionary of approved words. Every rule statement below carries original wording, quotes no published text, and claims no compliance or certification. The linter `scripts/ste-check.sh` enforces the mechanical subset of these rules, and `SKILL.md` holds the entry procedure.
 
 Source: https://www.asd-ste100.org/
 
@@ -137,8 +137,8 @@ Right: The auth middleware in `apps/api` rejects the token.
 Copy every file path, package name, environment variable, function name, and label character for character. Keep the case, the separators, and the extension. A near-miss identifier costs the reader a failed search.
 
 ```text
-Wrong: the oh scripts ralph script
-Right: `.oh/scripts/ralph.sh`
+Wrong: the agro scripts ralph script
+Right: `/delegate`
 ```
 
 ## 3. Verbs and voice
@@ -177,8 +177,8 @@ Right: The runner fetches the branch. The runner verifies the checksum.
 Replace a gerund or a participle with an infinitive or a finite verb. An `-ing` form hides the tense and the actor.
 
 ```text
-Wrong: Running the probe before merging catches the regression.
-Right: Run the probe before you merge. The probe catches the regression.
+Wrong: Running the test before merging catches the regression.
+Right: Run the test before you merge. The test catches the regression.
 ```
 
 ### 18. Name the actor
@@ -319,8 +319,8 @@ Right: 2. Start the stack. `docker compose ps` lists three containers in state `
 State who runs each step and where the step runs. Mark each command as host, container, local, or remote. A command in the wrong context damages the wrong machine.
 
 ```text
-Wrong: Run `make destroy`.
-Right: On the host, run `make destroy`. Never run this command inside the container.
+Wrong: Run `agro destroy`.
+Right: On the host, run `agro destroy`. Never run this command inside the container.
 ```
 
 ### 34. Expose every hidden sequence
@@ -368,7 +368,7 @@ Write the unit with every number. Write the absolute path or the repo-relative p
 
 ```text
 Wrong: The timeout is large. Edit the config in the scripts folder.
-Right: The timeout is 600000 ms. Edit `.oh/scripts/ralph.sh` at line 42.
+Right: `/delegate` keeps acceptance with one owner. Read `skills/delegate/SKILL.md` for the workflow.
 ```
 
 ### 39. A heading is not an antecedent
@@ -387,8 +387,8 @@ Right: (heading) Provisioner startup
 Bound every claim by version, path, branch, or environment. An unbounded claim becomes false at the next change.
 
 ```text
-Wrong: The probe suite runs in CI.
-Right: On `development`, the workspace-and-postgres job runs the probe suite.
+Wrong: The test suite runs in CI.
+Right: On `development`, the workspace-and-postgres job runs the test suite.
 ```
 
 ## 7. Warnings, cautions, and irreversible actions
@@ -411,7 +411,7 @@ Name the exact loss and the exact scope. Name the volume, branch, account, host,
 
 ```text
 Wrong: Warning: this step is destructive.
-Right: Warning: `make destroy` removes the `openharness` container and every
+Right: Warning: `agro destroy` removes the `agro` container and every
        named volume of this project. Other Docker projects on the host survive.
 ```
 
@@ -421,7 +421,7 @@ Write every warning as complete sentences. Never compress a warning with an outp
 
 ```text
 Wrong: WARN: destroy = data gone
-Right: Warning: `make destroy` deletes the Postgres data volume. The deletion
+Right: Warning: `agro destroy` deletes the Postgres data volume. The deletion
        removes every local row.
 ```
 
@@ -441,7 +441,7 @@ List each file, volume, branch, table, and remote reference the action removes. 
 
 ```text
 Wrong: The teardown cleans up.
-Right: `make destroy` removes the container `openharness`, the volume
+Right: `agro destroy` removes the container `agro`, the volume
        `harness_node_modules`, and the network `harness_default`.
 ```
 
@@ -514,7 +514,7 @@ Write the open question in the same paragraph as the placeholder. Name the owner
 ```text
 Wrong: The cron runs every `<interval>`.
 Right: The cron runs every `<interval>`. OPEN: confirm the interval in
-       `.oh/crons/autopilot.md`. Owner: the harness orchestrator.
+       `crons/heartbeat.md`. Owner: the harness orchestrator.
 ```
 
 ### 53. Never trade accuracy for brevity

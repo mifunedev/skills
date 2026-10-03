@@ -67,9 +67,9 @@ Set `DOCKER_SOCKET=true` before you start the container.
 ```
 
 ```text after
-1. Stop the `openharness` container.
-2. Delete the `openharness_data` volume.
-3. Start the `openharness` container.
+1. Stop the `agro` container.
+2. Delete the `agro_data` volume.
+3. Start the `agro` container.
 ```
 
 **Why:** One action per step lets the operator stop after any step.
@@ -230,14 +230,14 @@ Due to the fact that the cache is sometimes corrupted, you should probably clear
 **Domain:** Warnings and cautions
 **Rules:** warning before command, named loss
 ```text before
-Run `make destroy` to reset the sandbox. Note that this will also remove the volumes and the data in them is deleted permanently, so make sure you have a backup of anything important before you go ahead.
+Run `agro destroy` to reset the sandbox. Note that this will also remove the volumes and the data in them is deleted permanently, so make sure you have a backup of anything important before you go ahead.
 ```
 
 ```text after
-**WARNING:** `make destroy` deletes the `openharness_postgres` volume and every row in the database. The deletion is permanent.
+**WARNING:** `agro destroy` deletes the `agro_postgres` volume and every row in the database. The deletion is permanent.
 
 1. Back up the database with `pg_dump`.
-2. Run `make destroy`.
+2. Run `agro destroy`.
 ```
 
 **Why:** The warning precedes the command and names the volume and the rows.
@@ -325,6 +325,28 @@ Read `AGENTS.md` before you edit a file. Ask the operator when a requirement has
 ```
 
 **Why:** The rewrite gives the agent two testable instructions with a named file.
+
+**Domain:** Coding-agent instructions
+**Rules:** code block copied byte for byte, order stated in prose
+````markdown before
+1. You should probably install the dependencies and then run the tests, and it will usually pass:
+
+   ```bash
+   npm ci
+   npm test
+   ```
+````
+
+````markdown after
+1. Run the commands in this block in the given order. The first command installs the dependencies. The second command runs the tests.
+
+   ```bash
+   npm ci
+   npm test
+   ```
+````
+
+**Why:** The rewrite keeps the code block as one block and states the order in the prose.
 
 ## Architecture documents
 

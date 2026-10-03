@@ -18,7 +18,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 - Per-skill `LICENSE` (MIT) file in each new skill directory.
 
 ### Changed
-- `registry.json`, `README.md`, the registry schema, and the new-skill issue template: renamed the `open-harness` category to `agro`, the current name of the project. The category holds `agro-host-matrix`, `context-audit`, and `interview`.
+- `agent-browser`, `ci-status`, `delegate`, `prd`, `release`, `ste`, and `worktrees`: replaced each published copy with the current canonical copy from mifunedev/agro, then removed every reference an installer cannot resolve. `prd` and `delegate` name the task directory `<tasks-dir>`; `worktrees` reads `WORKTREES_ROOT`, `PROJECTS_ROOT`, and `GIT_MAINTENANCE`; `release` names host scripts by placeholder; `argument-hint` moved under `metadata.mifune.claude-code`. `agent-browser` gains `scripts/annotate-screenshot.sh`, and `prd` gains `references/tracker.md`. Refreshed all seven checksums and descriptions.
+- `README.md`: the catalog lists all 11 published skills. `.github/ISSUE_TEMPLATE/bug.md` no longer uses an `open-harness` example.
+- `registry.json`, `README.md`, the registry schema, and the new-skill issue template: renamed the `open-harness` category to `agro`, the current name of the project. The category holds `agro-host-matrix` and `interview`.
 - `ship-spec` and `ste` skills: removed every reference to a file or a command an installer does not have, and refreshed both checksums. `ship-spec/SKILL.md` named `scripts/ralph.sh` at three backticked sites and once more in the stage diagram; the published folder ships no `scripts/` directory, so all four now name the loop runner that the host repository supplies. `ste/SKILL.md` named `/retro`, which this registry publishes under the name `reflect`, and pointed at a harness-only memory-protocol path; both now name the `/reflect` skill, which holds that protocol. The Open Harness portability lint (openharness#758) reported the five backticked cases; the diagram reference is the same defect in a form that lint does not read. That check now reports no unresolvable reference in any of the 18 published skills.
 - `context-audit` skill: removed the top-level `argument-hint` frontmatter key (forbidden by the `skills-ref` portability deny-list) and refreshed its checksum; `scripts/validate.sh` now passes for the full library.
 - `registry.json`: replaced `skills[]` array (3 placeholder entries → 13 current entries, alphabetical), set `license: "MIT"` on every entry, bumped top-level `version` to `2026.5.17`, refreshed all checksums via `scripts/refresh-checksums.sh`.
@@ -27,6 +29,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 
 ### Removed
 - `jev` and `laya` skills, replaced by `system-one`.
+- `context-audit` skill.
 - Retired eight skills: `render-html`, `harness-audit`, `harness-context`, `ship-spec`, `ralph`, `strategic-proposal`, `skill-lint`, and `reflect`. Removed each folder and each `registry.json` entry, and removed the matching `README.md` catalog rows. `interview` no longer names `/ship-spec`. `ste` no longer routes lessons through `/reflect`; `ste` now proposes one lesson and appends it after the operator confirms.
 - `rlm/` guest-skill directory (out of scope for Mifune V0 curation).
 - Placeholder skills `docker-sandbox-debug/`, `github-prd/`, `open-harness-review/` (superseded by the upstream-sync set above).
