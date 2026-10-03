@@ -23,5 +23,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); version
 - `registry.json` `_v0_note`: removed sentence about the now-deleted `rlm/` directory.
 
 ### Removed
+- Retired eight skills: `render-html`, `harness-audit`, `harness-context`, `ship-spec`, `ralph`, `strategic-proposal`, `skill-lint`, and `reflect`. Removed each folder and each `registry.json` entry, and removed the matching `README.md` catalog rows. `interview` no longer names `/ship-spec`. `ste` no longer routes lessons through `/reflect`; `ste` now proposes one lesson and appends it after the operator confirms.
 - `rlm/` guest-skill directory (out of scope for Mifune V0 curation).
 - Placeholder skills `docker-sandbox-debug/`, `github-prd/`, `open-harness-review/` (superseded by the upstream-sync set above).

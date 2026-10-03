@@ -66,38 +66,10 @@
       "updated": "2026-05-17"
     },
     {
-      "name": "harness-audit",
-      "path": "skills/harness-audit",
-      "version": "0.1.0",
-      "checksum": "sha256:4bf827fddf3d7cdb846ea85a391264ceb61bc53e416866fdfa1b23deb255f229",
-      "description": "Spawn 4 parallel sub-agents (PM, Implementer, Critic, Explorer) to audit the harness for improvements. Synthesizes findings into tier-ranked actionable list. Outputs recommended next 3 actions. TRIGGER when: asked to audit the harness, find improvements, review system health, \"what should we fix\", or periodically via heartbeat.",
-      "category": "open-harness",
-      "requires-tools": [
-        "git"
-      ],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-05-17",
-      "updated": "2026-05-17"
-    },
-    {
-      "name": "harness-context",
-      "path": "skills/harness-context",
-      "version": "0.1.0",
-      "checksum": "sha256:1312c20b62ff362e17532b9a1d389e5775aeb47009c5e6a741e1adcb001b1f84",
-      "description": "Explain the Open Harness architecture, layout, and conventions. Use this skill when the user asks about project structure, layout, git workflow, rules, or how things are organized. Returns specific file paths and `path:line` citations. TRIGGER when: asked about harness structure, layout, conventions, rules, process, or project organization.",
-      "category": "open-harness",
-      "requires-tools": [],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-05-17",
-      "updated": "2026-05-17"
-    },
-    {
       "name": "interview",
       "path": "skills/interview",
       "version": "0.1.0",
-      "checksum": "sha256:e9dbe877e5cc26060431820e702a12ee6fca30220fa1e8d790aa09f2d3c49317",
+      "checksum": "sha256:ce4a1f08dd5079468bd6d05c6cc579b20c1fe7a32968b9614bf9e46e78acd7c2",
       "description": "Adaptive pre-work clarifier. Picks 2–4 task-specific questions via AskUserQuestion, echoes a brief scope summary, then proceeds. Refuses for trivial tasks. TRIGGER when: /interview invoked explicitly, OR before non-trivial work where scope/intent/constraints are ambiguous AND the user hasn't already specified them.",
       "category": "open-harness",
       "requires-tools": [],
@@ -170,32 +142,6 @@
       "updated": "2026-05-17"
     },
     {
-      "name": "ralph",
-      "path": "skills/ralph",
-      "version": "0.1.0",
-      "checksum": "sha256:7faf5221e086b93b153378f9a33716a2cde82c5e69c1cf4a81b28552fc813dc1",
-      "description": "Convert PRDs to prd.json format for the Ralph autonomous agent system. Use when you have an existing PRD and need to convert it to Ralph's JSON format. Triggers on: convert this prd, turn this into ralph format, create prd.json from this, ralph json.",
-      "category": "orchestration",
-      "requires-tools": [],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-05-17",
-      "updated": "2026-05-17"
-    },
-    {
-      "name": "reflect",
-      "path": "skills/reflect",
-      "version": "0.1.0",
-      "checksum": "sha256:9be176e0dc115ab40ea839d1155a3e21a42105553020d5270cc88453f47c270e",
-      "description": "Deliberate whole-session memory pass: scan the current conversation for durable behavioral patterns, run the qualify filter, classify surviving lessons by memory tier, propose MEMORY.md / IDENTITY.md additions for confirmation, then write only what was approved plus the mandatory log entry. Operationalizes the Memory Improvement Protocol (context/rules/memory.md) as an explicit, session-closing skill rather than a per-run afterthought. TRIGGER when: /reflect invoked explicitly, or when the session is closing and contains decisions, surprises, or failure modes worth preserving.",
-      "category": "open-harness",
-      "requires-tools": [],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-05-22",
-      "updated": "2026-05-22"
-    },
-    {
       "name": "release",
       "path": "skills/release",
       "version": "0.1.0",
@@ -212,53 +158,10 @@
       "updated": "2026-05-17"
     },
     {
-      "name": "render-html",
-      "path": "skills/render-html",
-      "version": "0.1.0",
-      "checksum": "sha256:a54e602161adf6f53d0f0bbdf0c227112ece935ad093448c3a54c877dae80c4c",
-      "description": "Render an artifact (or in-context material) as a bespoke, self-contained HTML file for one-shot human consumption. Writes to memory/<UTC-date>/<slug>.html. Output is gitignored — these are consumption artifacts, not source. TRIGGER when: asked to render HTML, generate an HTML report, visualize an audit/council/lint/digest, \"make this readable\", \"make a dashboard for\", or as a follow-up to /harness-audit, /strategic-proposal, /skill-lint.",
-      "category": "open-harness",
-      "requires-tools": [],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-05-22",
-      "updated": "2026-05-22"
-    },
-    {
-      "name": "ship-spec",
-      "path": "skills/ship-spec",
-      "version": "0.1.0",
-      "checksum": "sha256:650b34e378304a1980ba7a780504ce1d3569f1d62c859c90cd9450ee9763df4a",
-      "description": "Compose /prd → 2 critics → /ralph → gh issue → branch → draft PR into a single end-to-end invocation. Produces a fully-scaffolded task ready for the Ralph runner, plus an open draft PR for observability. TRIGGER when: asked to scaffold a spec end-to-end, \"ship a spec\", \"set up a task PR\", or after planning a feature and ready to formalize. v1 stops at draft PR creation; loop launch + CI verification stay manual.",
-      "category": "orchestration",
-      "requires-tools": [
-        "gh",
-        "git",
-        "node"
-      ],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-05-17",
-      "updated": "2026-05-17"
-    },
-    {
-      "name": "skill-lint",
-      "path": "skills/skill-lint",
-      "version": "0.1.0",
-      "checksum": "sha256:fbc3398435fe3c4f337b178250cf140ec83c4eca5d0cbfcd4039bd8f78056bd9",
-      "description": "Score all skills for staleness using 5 dimensions (freshness, usage, integrity, format, dependencies). Reports CURRENT/STALE/BROKEN/DELETE verdicts with specific recommendations. TRIGGER when: asked to audit skills, check skill health, \"are my skills stale\", \"skill lint\", or periodically via heartbeat.",
-      "category": "skills-meta",
-      "requires-tools": [],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-05-17",
-      "updated": "2026-05-17"
-    },
-    {
       "name": "ste",
       "path": "skills/ste",
       "version": "0.1.0",
-      "checksum": "sha256:860641f67af269f5ffda8d023fdf3129f8b7bc94c6e4658b23bc66334124b3e6",
+      "checksum": "sha256:d83e979df38394b012b90f99375846adc8ea9c1ca9f8f8c80ac7ece3ffb2af25",
       "description": "Write and rewrite technical prose in Simplified Technical English style: short declarative sentences, active voice, imperative procedures, one term per concept, no hedges, and explicit conditions. Never simplifies code, commands, identifiers, paths, or quoted literals. Marks missing values with a placeholder rather than inventing one. Ships a deterministic checker. TRIGGER when: asked to write, rewrite, simplify, clarify, tighten, or review documentation, a README, a runbook, a spec, release notes, a PR or commit body, an error message, CLI help text, an API description, or agent instructions; or when asked for plain English, controlled language, STE, Simplified Technical English, or \"make this unambiguous\".",
       "category": "dev-workflow",
       "requires-tools": [],
@@ -266,21 +169,6 @@
       "license": "MIT",
       "added": "2026-08-12",
       "updated": "2026-08-12"
-    },
-    {
-      "name": "strategic-proposal",
-      "path": "skills/strategic-proposal",
-      "version": "0.1.0",
-      "checksum": "sha256:e4d8cd458bc82f1b9658f63dec220c629258bc0bcf5353baac0b3bcf682cd993",
-      "description": "Spawn 5 domain experts to propose roadmap items, then an AI council drafts a roadmap, a Strategic Critic challenges it, and the council finalizes with revisions. Updates the pinned roadmap issue and /roadmap page data. TRIGGER when: asked to build roadmap, prioritize features, strategic proposal, \"what should we build next\", or rank product priorities.",
-      "category": "orchestration",
-      "requires-tools": [
-        "gh"
-      ],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-05-17",
-      "updated": "2026-05-17"
     },
     {
       "name": "worktrees",
