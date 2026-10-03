@@ -1,5 +1,5 @@
 {
-  "_v0_note": "This registry.json is hand-written for the V0 seed release and indexes only the Mifune-curated skills under skills/<name>/. The automated generator (scripts/publish-registry.sh) and drift-parity CI check are deferred to V1 per the project PRD Non-Goals. Do not edit checksum values manually \u2014 recompute using scripts/refresh-checksums.sh (algorithm documented in docs/checksum.md).",
+  "_v0_note": "This registry.json is hand-written for the V0 seed release and indexes only the Mifune-curated skills under skills/<name>/. The automated generator (scripts/publish-registry.sh) and drift-parity CI check are deferred to V1 per the project PRD Non-Goals. Do not edit checksum values manually — recompute using scripts/refresh-checksums.sh (algorithm documented in docs/checksum.md).",
   "$schema": "./docs/schema/registry.v1.json",
   "name": "mifunedev-skills",
   "description": "Cross-agent skill library curated by Mifune Dev.",
@@ -26,7 +26,7 @@
       "name": "agro-host-matrix",
       "path": "skills/agro-host-matrix",
       "version": "0.1.0",
-      "checksum": "sha256:46d85423f5682fbf58639f4473959e8791802511ec0dc73449d09d4e709c2d2e",
+      "checksum": "sha256:9cc9b4cd9e1f029a00ca857f4167bd8bdd0ae9927484a4b92528483b190fb19a",
       "description": "Validate mifunedev/agro expectations on real hosting environments and run the AGRO hosting-substrate matrix reproducibly on Vercel Sandbox, exe.dev, or an agro-console node: 15 AGRO operation rows with one RESULT line each, per-row rationale, a 2026-10 baseline, and guaranteed VM cleanup. TRIGGER when: asked to validate an AGRO release or candidate on real VMs, check AGRO for regressions, qualify a provider for AGRO, or compare VM providers.",
       "category": "agro",
       "requires-tools": [
@@ -47,7 +47,7 @@
       "path": "skills/ci-status",
       "version": "0.1.0",
       "checksum": "sha256:2aedc28fcb9fbb256ff6c26da4df6ddc64ce0d015c29921545a11f484817dc2a",
-      "description": "Check the CI pipeline status for the current branch after pushing changes. Reports pass/fail with failure details. Use this after every push to confirm your changes are truly done \u2014 CI must be green. TRIGGER when: after git push, after committing changes, when asked to check CI, or when verifying that work is complete.",
+      "description": "Check the CI pipeline status for the current branch after pushing changes. Reports pass/fail with failure details. Use this after every push to confirm your changes are truly done — CI must be green. TRIGGER when: after git push, after committing changes, when asked to check CI, or when verifying that work is complete.",
       "category": "dev-workflow",
       "requires-tools": [
         "gh"
@@ -62,7 +62,7 @@
       "path": "skills/context-audit",
       "version": "0.1.0",
       "checksum": "sha256:02dd6324bb7ab62331a42fa414e2325bbb293c4e6f0ebb8aeead09f3948595a1",
-      "description": "Score the default-loaded context budget across 4 dimensions and emit KEEP/TRIM/DEMOTE/CUT verdicts per file. Optional Tier-2 ablation harness removes a target file, runs a fixed probe suite via claude -p, and measures behavior degradation \u2014 the only provably safe gate for cutting load-bearing content. TRIGGER when: asked to audit context window, check default context load, evaluate rules for signal vs noise, or before/after any change to context/rules/ or CLAUDE.md.",
+      "description": "Score the default-loaded context budget across 4 dimensions and emit KEEP/TRIM/DEMOTE/CUT verdicts per file. Optional Tier-2 ablation harness removes a target file, runs a fixed probe suite via claude -p, and measures behavior degradation — the only provably safe gate for cutting load-bearing content. TRIGGER when: asked to audit context window, check default context load, evaluate rules for signal vs noise, or before/after any change to context/rules/ or CLAUDE.md.",
       "category": "agro",
       "requires-tools": [
         "claude"
@@ -90,7 +90,7 @@
       "path": "skills/interview",
       "version": "0.1.0",
       "checksum": "sha256:ce4a1f08dd5079468bd6d05c6cc579b20c1fe7a32968b9614bf9e46e78acd7c2",
-      "description": "Adaptive pre-work clarifier. Picks 2\u20134 task-specific questions via AskUserQuestion, echoes a brief scope summary, then proceeds. Refuses for trivial tasks. TRIGGER when: /interview invoked explicitly, OR before non-trivial work where scope/intent/constraints are ambiguous AND the user hasn't already specified them.",
+      "description": "Adaptive pre-work clarifier. Picks 2–4 task-specific questions via AskUserQuestion, echoes a brief scope summary, then proceeds. Refuses for trivial tasks. TRIGGER when: /interview invoked explicitly, OR before non-trivial work where scope/intent/constraints are ambiguous AND the user hasn't already specified them.",
       "category": "agro",
       "requires-tools": [],
       "clients": [],
