@@ -26,14 +26,14 @@ an unchanged version gives a clean, green no-op run.
 
 One release produces, from one build and one commit:
 
-- The canonical npm package `@mifune/agro` (the `agro` executable, from `.agro/cli`).
-  The `@mifune/agro` shim source remains at `.agro/cli/legacy/` and
+- The canonical npm package `@mifune/agro` (the `agro` executable, from the host repository's CLI package).
+  The `@mifune/agro` shim source remains in the legacy shim directory of that CLI package, and
   already-published shim versions remain on the registry. The release path does
   not publish, wait for, or deprecate the shim.
 - Four immutable GHCR tags: `ghcr.io/mifunedev/agro:<version>`,
   `:sha-<sha>`, `ghcr.io/mifunedev/agro:<version>`, and `:sha-<sha>`, verified to
-  share one manifest digest (`.agro/scripts/verify-release-aliases.sh`), then
-  `latest` on both repositories (`.agro/scripts/promote-release-latest.sh`).
+  share one manifest digest (the host repository's `<release alias verifier>` script), then
+  `latest` on both repositories (the host repository's `<release latest promoter>` script).
 - Four GitHub Release assets: `agro.js`, `oh.js`, `get-agro.sh`, and `get-agro.sh`,
   attached before the release is undrafted so
   `releases/latest/download/<asset>` resolves on publication.
@@ -44,9 +44,9 @@ A release cut bumps the canonical version in two places, and `version-parity.sh`
 fails the build when they drift:
 
 1. `package.json` (root).
-2. `.agro/cli/package.json` and `.agro/cli/package-lock.json`.
+2. The `package.json` and `package-lock.json` of the CLI package.
 
-The retained shim at `.agro/cli/legacy/package.json` keeps its own `version` and
+The retained shim's `package.json` in the legacy shim directory keeps its own `version` and
 an exact `@mifune/agro` pin that equals that shim version. The shim version does
 not have to match a later canonical version. `` checks that
 internal coherence.
@@ -80,8 +80,8 @@ publishes from an experiment branch.
 To cut a pre-release on an experiment branch:
 
 1. Merge `development` into the branch so its `release.yml` supports pre-releases.
-2. Set the version in root `package.json`, `.agro/cli/package.json`, and
-   `.agro/cli/package-lock.json`.
+2. Set the version in root `package.json` and in the `package.json` and
+   `package-lock.json` of the CLI package.
 3. Add a dated `## [<version>] - YYYY-MM-DD` heading to `CHANGELOG.md`.
 4. Push the branch. Monitor the run as in step 4, with `--branch <experiment-branch>`.
 
@@ -121,8 +121,8 @@ Require all of the following before a release push:
 - The working tree is clean.
 - The source commit is pushed to the canonical remote.
 - CI for the source commit is green.
-- Root `package.json` names the version to publish, `.agro/cli/package.json`
-  matches it (`pnpm exec vitest run .agro/scripts/__tests__/version-parity-contract.test.ts`), and
+- Root `package.json` names the version to publish, the `package.json` of the CLI package
+  matches it (the host repository's version-parity contract test passes), and
   no `v<version>` tag exists yet. An unbumped push is a green no-op that publishes
   nothing. A newly published `@mifune/agro` version is not required.
 - `CHANGELOG.md` has a `## [<version>]` section matching that version (the
@@ -188,6 +188,9 @@ then verify the four immutable image tags, the canonical npm package, the releas
 assets, and the GitHub Release. The tag carries the `v` prefix; the image tags
 do not. A newly published `@mifune/agro` version is not a release gate.
 
+Replace `<release alias verifier>` with the host repository's script that checks
+that the image tags share one manifest digest.
+
 ```bash
 git fetch "$REMOTE" --tags
 TAG=$(git tag --points-at "$SHA" \
@@ -195,7 +198,7 @@ TAG=$(git tag --points-at "$SHA" \
   | sort -V | tail -1)
 test -n "$TAG" || { echo "No SemVer tag found for $SHA" >&2; exit 1; }
 gh release view "$TAG" --repo "$REPO" --json assets -q '.assets[].name'
-.agro/scripts/verify-release-aliases.sh check \
+<release alias verifier> check \
   "ghcr.io/mifunedev/agro:${TAG#v}" "ghcr.io/mifunedev/agro:${TAG#v}"
 npm view "@mifune/agro@${TAG#v}" version
 printf 'Images: ghcr.io/mifunedev/{agro,agro}:%s and :sha-%s\n' "${TAG#v}" "$SHA"
