@@ -13,7 +13,8 @@ allowed-tools: Bash
 
 # Worktrees
 
-Manage `.worktrees/` and `projects/`. Full policy: `/git` § Worktrees.
+Manage `.worktrees/` and `projects/`. Your repository's git workflow sets the full
+branch, commit, and pull request policy.
 
 A repository's worktrees live at that repository's own root, in `.worktrees/`.
 The harness is the first instance of that rule; a project clone under `projects/`
@@ -31,7 +32,7 @@ under `.worktrees/`.
 
 **Track/preserve** deliberate, durable harness changes, including:
 
-- `.agro/skills/`, `.agro/hooks/`, `.agro/scripts/`, `.devcontainer/`,
+- The control-plane skills, hooks, and scripts directories, `.devcontainer/`,
   `.github/`, docs, templates, and supported configuration
   defaults.
 - `.worktrees/AGENTS.md`, `projects/AGENTS.md`, and other lifecycle
@@ -58,9 +59,10 @@ git -C ~/harness diff --cached --name-status
 ```
 
 Use `git restore <path>` only for identified files. Preview cleanup with
-`git clean -nd` (or `git clean -ndX` for ignored files); route destructive
-`reset`/`clean` operations through `.agro/scripts/git-maintenance.sh` as required
-by `/git`.
+`git clean -nd` (or `git clean -ndX` for ignored files). If the repository
+provides a git maintenance shim, run destructive `reset` and `clean` operations
+through that shim. Else run the plain `git reset` or `git clean` command after the
+preview.
 
 ### `$PROJECTS_ROOT/<owner>/<repo>` — independent project clone
 
@@ -102,21 +104,18 @@ Run first. Every create/remove op needs `$BASE` and `$WORKTREES_ROOT`.
 
 `$WORKTREES_ROOT` is always `.worktrees/` inside **the repository you are standing
 in** — run this from the harness root for harness branches, or from
-`projects/<owner>/<repo>/` to cut a worktree of that project. `agro-path` resolves the
-fixed root and only exists at the harness root, so the project case
-falls through to the repository toplevel.
+`projects/<owner>/<repo>/` to cut a worktree of that project. If the repository
+provides a path helper, set `WORKTREES_ROOT` and `PROJECTS_ROOT` from the helper
+before you run the block below. The block keeps a preset value. Else `WORKTREES_ROOT`
+defaults to `.worktrees` and `PROJECTS_ROOT` defaults to `projects` at the
+repository toplevel.
 
 ```bash
 BASE=$(git show-ref --verify --quiet refs/heads/development && echo development || \
        git show-ref --verify --quiet refs/heads/main && echo main || echo master)
 TOPLEVEL="$(git rev-parse --show-toplevel)"
-if [ -x "$TOPLEVEL/.agro/scripts/agro-path" ]; then
-  WORKTREES_ROOT="$(bash "$TOPLEVEL/.agro/scripts/agro-path" worktrees --no-create 2>/dev/null || printf '%s' "$TOPLEVEL/.worktrees")"
-  PROJECTS_ROOT="$(bash "$TOPLEVEL/.agro/scripts/agro-path" projects --no-create 2>/dev/null || printf '%s' "$TOPLEVEL/projects")"
-else
-  WORKTREES_ROOT="$TOPLEVEL/.worktrees"
-  PROJECTS_ROOT=""
-fi
+WORKTREES_ROOT="${WORKTREES_ROOT:-$TOPLEVEL/.worktrees}"
+PROJECTS_ROOT="${PROJECTS_ROOT:-$TOPLEVEL/projects}"
 echo "$BASE"
 echo "$WORKTREES_ROOT"
 ```
@@ -204,11 +203,16 @@ git worktree prune
 
 ### Forced removal under the cc-safety-net guard
 
-`git worktree remove --force` (and `git branch -D`) are denied inline by cc-safety-net. In agent (hook-mediated) contexts route them through the file-invoked shim:
+`git worktree remove --force` (and `git branch -D`) are denied inline by cc-safety-net. In agent (hook-mediated) contexts route them through the file-invoked shim when the repository provides one. Set `GIT_MAINTENANCE` to the path of that shim. Else the block runs the plain git commands:
 
 ```bash
-bash .agro/scripts/git-maintenance.sh worktree-remove "$WORKTREES_ROOT/$BRANCH"
-bash .agro/scripts/git-maintenance.sh branch-delete "$BRANCH"
+if [ -n "${GIT_MAINTENANCE:-}" ] && [ -f "$GIT_MAINTENANCE" ]; then
+  bash "$GIT_MAINTENANCE" worktree-remove "$WORKTREES_ROOT/$BRANCH"
+  bash "$GIT_MAINTENANCE" branch-delete "$BRANCH"
+else
+  git worktree remove --force "$WORKTREES_ROOT/$BRANCH"
+  git branch -D "$BRANCH"
+fi
 ```
 
 Scope: only **non-agent-mediated** invocations (raw scheduler/tmux shell scripts) bypass PreToolUse hooks. Agent-driven crons do **not** bypass them, so they must use the shim too. Plain `git worktree remove` (no `--force`) stays allowed.
