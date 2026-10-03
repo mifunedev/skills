@@ -1,247 +1,175 @@
 ---
 name: delegate
 description: |
-  Parallel execution coordinator. Decomposes a plan into discrete tasks,
-  identifies parallelism via dependency analysis, and spawns worker sub-agents
-  in waves to maximize throughput without sacrificing quality. Collects results,
-  validates completeness, and reports a structured summary.
-  TRIGGER when: asked to delegate work, execute a plan, parallelize tasks,
-  "run this plan", "delegate this", or after /prd or plan creation.
+  TRIGGER when: asked to "delegate this", "run this plan", "execute the stories",
+  or "parallelize" the work. Writing or reading a plan is not a trigger and
+  authorizes no dispatch. Runs the stories in .agro/tasks/<slug>/prd.json as
+  bounded workers in dependency waves. The active session verifies each result,
+  accepts it, and records it in prd.json.
+metadata:
+  mifune:
+    claude-code:
+      argument-hint: "[<task-slug> | --plan <path>] [--dry-run]"
 ---
 
 # Delegate
 
-Parallel execution coordinator. Read a plan or conversation context, decompose it into
-a dependency-ordered task graph, and spawn worker sub-agents in parallel waves. Each wave
-completes before the next begins. Results are collected, validated, and reported.
+## The advisor/worker pattern
 
-**Core principle: maximize parallelism while respecting dependencies absolutely.**
+The **advisor** is the active session. It decides, assigns bounded stories,
+verifies each result, and accepts it. The advisor alone writes `prd.json`:
+`passes`, `commit`, and `notes`.
 
-## Decision Flow
+A **worker** is a bounded execution context, not a project role. A worker
+implements one assignment inside its owned paths. It reports each criterion as
+executed or reasoned. A worker never accepts its own result.
 
-```mermaid
-flowchart TD
-    A["Resolve input: $ARGUMENTS or conversation context"] --> B{Plan found?}
-    B -->|No| FAIL["Report: no plan found"]
-    FAIL --> MEM_FAIL[Memory Protocol]
+Use a worker when the story is self-contained and gains from parallelism,
+isolated context, or restricted tools. Keep the work in the active session when
+phases share substantial context or need iterative refinement.
 
-    B -->|Yes| C["Step 2: Deep-think task decomposition"]
-    C --> D["Step 3: Build dependency graph"]
-    D --> E["Step 4: Create tasks + compute waves"]
-    E --> F{--dry-run?}
-    F -->|Yes| DRY["Report: task graph + wave plan"]
-    DRY --> MEM_DRY[Memory Protocol]
+| Assign to a worker | Keep in the active session |
+|---|---|
+| Tracked implementation edits: code, tests, docs, repair | Goal interpretation, decomposition, verification, acceptance |
+| Coupled implementation, in one continuing worker | Reconciliation of results that share substantial context |
+| Verbose disposable output: logs, search dumps, test runs | Iterative refinement against operator feedback |
+| Disjoint owned paths with no shared mutable state | `prd.json`, `prd.md`, and the PR body |
 
-    F -->|No| G["Step 5: Execute Wave N"]
-    G --> G1["Worker A"]
-    G --> G2["Worker B"]
-    G --> G3["Worker C"]
-    G1 & G2 & G3 --> H{All passed?}
-    H -->|No| I["Mark dependents BLOCKED, continue independent"]
-    I --> J{More waves?}
-    H -->|Yes| J
-    J -->|Yes| G
-    J -->|No| K["Step 6: Validate"]
-    K --> L["Step 7: Report"]
-    L --> MEM_OP[Memory Protocol]
-```
+## Input
 
-## Instructions
+Resolve the input from the arguments:
 
-### 1. Resolve input
+1. `<task-slug>`: read `.agro/tasks/<slug>/prd.json`.
+2. `--plan <path>`: read the `prd.json` at `<path>`.
+3. A free-text plan with no `prd.json`: run `/prd` first to make the tracker.
+   To skip the tracker, dispatch once with no saved state. Tell the operator
+   which path you took.
+4. No input: print the usage line from `argument-hint`, then stop.
 
-Arguments received: `$ARGUMENTS`
+Each story in `userStories` is one task:
 
-- If `--plan <path>` is provided, read that file
-- If no arguments, use the current conversation context (the plan should be visible
-  from a prior `/prd`, plan discussion, or issue triage output)
-- If `--dry-run` is present, set DRY_RUN=true
+- `priority` sets the order. A lower number runs first.
+- `dependsOn` is optional. It lists the story IDs that must pass first.
+- `acceptanceCriteria` are the checks that the advisor runs.
+- `files` are the owned write paths of the worker.
 
-If no plan is found in either source, report:
-> No plan found. Provide a plan file path with `--plan <path>` or discuss the plan first, then run `/delegate`.
+The advisor skips each story with `passes: true`.
 
-Run Memory Protocol and stop.
+## Dispatch record
 
-### 2. Decompose into tasks (use extended thinking)
+Write one record for each story before dispatch. Keep only these fields:
 
-Analyze the plan deeply and produce a structured task list. For each task, determine:
+| Field | Value |
+|---|---|
+| Story ID | The `id` from `prd.json` |
+| Dependencies | The `dependsOn` IDs, or none |
+| Read scope | The files and directories that the worker reads |
+| Owned write paths | The `files` of the story; the worker edits nothing else |
+| Deliverable | One commit on the worker branch |
+| Verification | The commands and checks from `acceptanceCriteria`, with expected results |
+| Execution directory | The absolute path of the worktree |
+| Model and reason | The requested model, or the provider default, and the reason |
 
-| Field | Description |
-|-------|-------------|
-| **ID** | Sequential: T1, T2, T3, ... |
-| **Title** | Short imperative description |
-| **Description** | What the worker agent needs to do (2-3 sentences, include file paths) |
-| **Depends On** | Task IDs this requires first, or "none" |
-| **Files** | Key files the worker will read or modify |
-| **Model** | haiku (config/docs) / sonnet (standard, default) / opus (only multi-file architecture synthesis) |
-| **Acceptance** | How to verify the task is done (objectively checkable) |
+## Waves
 
-**Decomposition rules:**
-- Each task must be completable by a single sub-agent in one session
-- Prefer more smaller tasks over fewer larger ones
-- Schema/infrastructure before backend, backend before frontend
-- Tasks that touch different files with no shared state CAN be parallel
-- Tasks that modify the same file or depend on another's output MUST be sequential
-- Every task must have at least one verifiable acceptance criterion
-- Each task must have a **distinct, non-overlapping scope** — do not spawn redundant workers for the same files
-- A task that is itself multi-step and parallelizable MAY recursively delegate via the `Agent` tool — but only if the worker's task description includes explicit `Max depth: N` and `Step budget: N` fields (see `context/rules/recursive-delegation.md`). Absent those fields, workers stay flat.
+1. Put each story in a wave. A story is ready when every `dependsOn` story has
+   `passes: true`.
+2. Run the ready stories of a wave in parallel, at most 5 workers per wave.
+3. Give each parallel writer an isolated worktree. Branch it from the task branch.
+4. Stories with overlapping `files` run in sequence.
+5. Workers stay flat. Workers never spawn workers.
 
-### 3. Build dependency graph and compute waves
+A single story can use one worker. Parallelism is not mandatory.
 
-Arrange tasks into parallel execution waves using topological ordering:
+## Worker brief
 
-1. **Wave 1**: All tasks with `Depends On: none` -- run first, in parallel
-2. **Wave 2**: All tasks whose dependencies are entirely within Wave 1
-3. **Wave N**: All tasks whose dependencies are entirely within Waves 1..N-1
+Give each worker the dispatch record, the exclusions, and these rules:
 
-Output the wave plan:
+- Edit only the owned write paths. Obey the exclusions.
+- Work only in the execution directory.
+- Report each criterion as one of these:
+  - **executed**: the command and exit status.
+  - **reasoned**: a one-line argument.
+- Commit on the worker branch. Never push.
+- Never write `prd.json`.
+- Use no bare `git stash` or `git stash pop`. The stash stack is shared with
+  other sessions.
+- Never bypass a hook. A rerun of a blocked command through a script file, a
+  heredoc, or another tool is a bypass. Report a blocked action as `BLOCKED`.
 
-| Wave | Tasks | Parallelism | Complexity |
-|------|-------|-------------|------------|
-| 1 | T1, T2, T3 | 3 agents | S + S + M |
-| 2 | T4, T5 | 2 agents | M + S |
-| 3 | T6 | 1 agent | L |
+## Acceptance
 
-**Validation:**
-- No circular dependencies (if found, report error and stop)
-- Max 5 concurrent agents per wave (split larger waves into sub-waves)
+A worker report is not acceptance. For each story, the advisor does these steps:
 
-### 4. Create tasks and track dependencies
+1. Inspect the worker commit.
+2. Bring the commit onto the task branch.
+3. Rerun the verification on the integrated task branch.
+4. Write `passes: true`, `commit`, and `notes` in `prd.json`. In `notes`,
+   mark each criterion executed or reasoned.
 
-Use `TaskCreate` for each task. Then use `TaskUpdate` with `addBlockedBy` to wire dependencies.
+If a check fails, the story returns to the same worker with a bounded repair.
+The advisor does not repair. Dependents of a failed story wait.
 
-If `--dry-run`, output the full task graph and wave plan, then skip to **Step 8**.
+## Integration
 
-### 5. Execute waves
+After acceptance, do these steps on the task branch:
 
-For each wave, starting from Wave 1:
+1. Commit `prd.json` with the accepted story. Do not push it. `/git` § Draft PR
+   for a task names the two pushes.
+2. Tick the story in the PR `## Stories` checklist.
+3. Remove the worker worktree and branch. Use the git maintenance shim that
+   `/git` names.
 
-**a) Spawn worker agents in ONE message (parallel)**
+## Resume
 
-Launch N `Agent` tool calls **in a single message** for parallel execution. Each worker receives:
-- Task ID, title, description, files, and acceptance criteria
-- Summaries of completed prior-wave results (not full output)
-- Instruction: report what was done, what files changed, whether acceptance criteria are met
+There is no separate ledger. `prd.json` holds the state.
 
-Worker configuration:
-- **Model**: as specified in the task decomposition (haiku/sonnet/opus)
-- **run_in_background**: true (for waves with 2+ tasks)
+1. Read `prd.json`.
+2. Take the next story with `passes: false` whose dependencies passed.
+3. Re-verify the stories it builds on.
+4. Continue from **Waves**.
 
-**a.1) Recursion-authorization gate**
+## Model policy
 
-If any worker's task description authorizes recursive delegation (`Max depth: N` with N ≥ 2), confirm before spawning that **all three** fields are present in that worker's briefing:
+- Follow explicit operator selections and exclusions of models.
+- Otherwise, choose a model for each story. Record the reason in the dispatch
+  record.
+- Never substitute a model silently.
+- A required control that is unavailable blocks the story. Ask the operator.
 
-- `Max depth: N`
-- `Max children per level: M` (M ≤ 5)
-- `Step budget: S`
+Provider defaults live in provider settings. For Claude Code, the default is
+`CLAUDE_CODE_SUBAGENT_MODEL` in the `env` object of `.claude/settings.json`.
+A per-dispatch model overrides the default.
 
-If any field is missing, either add it or downgrade the task to flat execution (`Max depth: 1`). Workers without all three fields MUST stay flat — they have no authority to spawn grandchildren regardless of how the task is described in prose. See `context/rules/recursive-delegation.md` for the full protocol.
+## Close
 
-**b) Collect results**
+When every story has `passes: true`, do these steps:
 
-After all agents in the wave complete, update each task via `TaskUpdate`:
+1. Validate the integrated result with the checks of the repository: lint,
+   typecheck, test, and build. Record each exit status.
+2. Write `## Lessons` at the end of `prd.md`. Give each lesson a claim,
+   evidence, and exactly one outcome:
+   - fixed in this PR;
+   - issue #N; or
+   - dropped, with the reason.
 
-| Task | Status | Summary | Files Changed |
-|------|--------|---------|---------------|
-| T1 | completed | Created schema migration | prisma/schema.prisma |
-| T2 | completed | Added API route | src/app/api/... |
-| T3 | FAIL | Type error in ... | -- |
+   Fold a finding into the PR only when one of these conditions is true:
+   its fix is in a file that the PR already changes and the PR caused or
+   exposed the finding, or the finding breaks the chain in use. For each
+   other defect, propose one issue for each defect surface. If an open issue
+   already covers the surface, propose a comment on that issue. Drop
+   judgment and process observations, and findings that a test already
+   catches. List the proposed issues in the final report. Before the
+   operator approves the proposed issues at Close, create no issue.
 
-**c) Handle failures**
+   "None" is a valid body.
+3. Fill the PR evidence sections from the `notes` in `prd.json`.
+4. Fill the PR `## Manual review` section from the evidence of the last story.
+   Use the shape of [`.agro/skills/git/references/manual-review.md`](../git/references/manual-review.md).
+   Write only the expected results that the evidence observed.
+5. Continue with the "Ready for review" step of `/git`.
 
-If any task fails:
-- Log the failure with details
-- Check if tasks in subsequent waves depend on the failed task
-- Mark dependent tasks as BLOCKED (do not execute them)
-- Continue with non-dependent tasks in the next wave
+## Dry run
 
-**d) Advance to next wave**
-
-Pass completed task summaries as context to the next wave's workers. Repeat until all waves complete or all remaining tasks are blocked.
-
-### 6. Validate
-
-After all waves complete:
-
-1. Review acceptance criteria for every completed task
-2. If the plan involved code changes, run verification:
-
-```bash
-cd ~/harness && pnpm -r run lint 2>&1 || true
-cd ~/harness && pnpm -r run build 2>&1 || true
-cd ~/harness && pnpm -r run test 2>&1 || true
-```
-
-3. If validation fails, note which tasks likely caused the failure
-
-### 7. Report
-
-Output a structured summary:
-
-```
-## Delegation Report
-
-### Task Summary
-| Task | Wave | Status | Summary |
-|------|------|--------|---------|
-| T1   | 1    | DONE   | ...     |
-| T2   | 1    | DONE   | ...     |
-| T3   | 1    | FAIL   | ...     |
-| T4   | 2    | BLOCKED| Depends on T3 |
-
-### Execution Stats
-- Total tasks: N
-- Completed: N
-- Failed: N
-- Blocked: N
-- Waves executed: N
-- Max parallelism: N agents
-
-### Validation
-- Type check: PASS/FAIL
-- Lint: PASS/FAIL
-- Tests: PASS/FAIL
-
-### Issues Requiring Attention
-- [list any failures, blocked tasks, or validation errors]
-```
-
-### 8. Memory Improvement Protocol
-
-Run at the end of **every** execution -- op, dry-run, or error.
-
-**a) Log** -- append to `memory/<today>/log.md` where today = `date -u +%Y-%m-%d`:
-
-```markdown
-## Delegate -- HH:MM UTC
-- **Result**: OP | DRY-RUN | PARTIAL | FAIL
-- **Plan**: "<plan title or source>"
-- **Action**: [N tasks across M waves, P parallel max; X completed, Y failed, Z blocked]
-- **Duration**: ~Xs
-- **Observation**: [one sentence]
-```
-
-See `context/rules/memory.md` for the canonical Memory Improvement Protocol.
-
-## Reference
-
-### Wave Execution Rules
-
-| Rule | Value |
-|------|-------|
-| Max concurrent agents per wave | 5 (split larger waves) |
-| Failure handling | Mark dependent tasks BLOCKED, continue independent ones |
-| Context passing | Prior wave summaries, not full output |
-| Model selection | haiku: config/docs, sonnet: standard (default), opus: synthesis only |
-
-### Key Resources
-
-| Resource | Path |
-|----------|------|
-| Agent: Implementer | `.claude/agents/implementer.md` |
-| Agent: Critic | `.claude/agents/critic.md` |
-| Agent: PM | `.claude/agents/pm.md` |
-| Agent: Council | `.claude/agents/council.md` |
-| Identity | `IDENTITY.md` |
-| Memory | `MEMORY.md` |
-| Daily Logs | `memory/YYYY-MM-DD/log.md` |
+With `--dry-run`, print the waves and the dispatch records. Write nothing.
+The dry run dispatches nothing.

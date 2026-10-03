@@ -6,6 +6,10 @@ description: |
   Errors out with a diagnostic trace if anything fails.
   TRIGGER when: asked to open a page, browse a URL, take a screenshot,
   or test a site with agent-browser.
+metadata:
+  mifune:
+    claude-code:
+      argument-hint: "<url> [--viewport desktop|mobile] [--session <name>]"
 ---
 
 # Agent Browser
@@ -28,7 +32,7 @@ If URL is missing, ask the user to provide it.
 
 | Name | Width | Height |
 |------|-------|--------|
-| `desktop` | 1920 | 1080 |
+| `desktop` | 1280 | 720 |
 | `mobile` | 414 | 896 |
 
 Default is `desktop` if `--viewport` is not specified.
@@ -43,22 +47,23 @@ Run each check sequentially. If any check fails, **stop immediately** and report
 command -v agent-browser && agent-browser --version 2>&1 || echo "FAIL: agent-browser not found in PATH"
 ```
 
-If not found, install it — **use npm (not pnpm)** and **pin to 0.8.5**:
+If not found, install agent-browser through the CLI — the catalog entry pins the
+version, fixes the binary's mode, and runs `agent-browser install --with-deps`
+for you:
 
 ```bash
-sudo npm install -g agent-browser@0.8.5
+agro tool install agent-browser --yes
 ```
 
-Then install Chromium + system deps. `agent-browser install --with-deps`
-shells out to a `playwright` binary that isn't bundled with this package,
-so on a fresh image you'll also need the playwright CLI available:
+The confirmation gate requires `--yes` whenever stdin is not a TTY: the entry declares a
+`~1 GB` download, and the confirmation gate refuses rather than prompting.
 
-```bash
-agent-browser install --with-deps    # installs system libs (apt)
-# If it ends with "sh: 1: playwright: not found":
-sudo npm install -g playwright@latest
-npx playwright install chromium
-```
+That path applies in the sandbox. When no sandbox is reachable, the same
+command installs a pinned release binary into `~/.local/bin` on the host,
+downloads no browser, and needs no `--yes`. It then requires a
+Chromium-family browser already on the host, or
+`AGENT_BROWSER_EXECUTABLE_PATH` pointing at one. Firefox is not a supported
+target.
 
 Verify:
 
@@ -67,14 +72,16 @@ agent-browser --version     # → agent-browser 0.8.5
 agent-browser open about:blank && agent-browser close
 ```
 
-Rationale for the pins:
-- **npm, not pnpm** — `PNPM_HOME` is `/usr/local/share/pnpm`, owned by
-  root; `pnpm add -g` as the sandbox user fails with `EACCES`.
+Notes:
 - **0.8.5** — later majors have breaking CLI changes; the rest of this
-  skill targets 0.8.5's flags.
-
-Or rebuild the image with `INSTALL_AGENT_BROWSER=true` in
-`.devcontainer/.env` to bake this in.
+  skill targets 0.8.5's flags. The catalog owns the pin.
+- **Do not reach for `sudo npm install -g`.** It lands under
+  `/usr/lib/node_modules`, which no running sandbox can upgrade in place.
+  Use `agro tool install agent-browser`: the catalog installs into `$PNPM_HOME`
+  under the sandbox user's own home.
+- If `agent-browser install --with-deps` ever ends with
+  `sh: 1: playwright: not found`, the playwright CLI is missing:
+  `npx playwright install chromium` after `pnpm add -g playwright@latest`.
 
 After installing, resume the health check from step 2b — **do not stop**.
 
@@ -122,7 +129,7 @@ agent-browser close
 
 ### Step 2d — DNS resolution check (tunnel hostnames)
 
-If the URL contains a hostname served by a tunnel or reverse proxy, the container's DNS may not resolve it yet. Check and fix:
+If the URL contains a hostname served by a Cloudflared tunnel or custom DNS route, the container's DNS may not resolve it yet. Check and fix:
 
 ```bash
 HOSTNAME=$(echo "$URL" | sed 's|https\?://||; s|/.*||; s|:.*||')
@@ -147,7 +154,7 @@ This ensures agent-browser can reach tunnel-served sites even when the container
 Set the viewport size based on the selected viewport, then open the URL:
 
 ```bash
-# Desktop: 1920x1080, Mobile: 375x812
+# Desktop: 1280x720, Mobile: 375x812
 agent-browser open "$URL" --viewport-width $WIDTH --viewport-height $HEIGHT $( [ -n "$SESSION" ] && echo "--session $SESSION" )
 ```
 
@@ -155,7 +162,7 @@ If `agent-browser open` does not support `--viewport-width`/`--viewport-height` 
 
 ```bash
 agent-browser open "$URL" $( [ -n "$SESSION" ] && echo "--session $SESSION" )
-agent-browser execute "await page.setViewportSize({ width: $WIDTH, height: $HEIGHT })"
+agent-browser eval "await page.setViewportSize({ width: $WIDTH, height: $HEIGHT })"
 ```
 
 If this fails, report the error with the full output.
@@ -168,15 +175,27 @@ agent-browser snapshot -c
 
 Report a summary of what loaded (page title, key elements visible).
 
-Take a screenshot to `.claude/screenshots/` using a descriptive filename derived from the URL path:
+Take a screenshot to `.claude/screenshots/` using a descriptive filename derived from the URL path. **Use an absolute output path** — `agent-browser` 0.8.5 writes relative paths from the daemon's working directory, so relative paths can silently miss the intended repo location.
 
 ```bash
 # Generate filename from URL: strip protocol, replace / with --, remove trailing -
 FILENAME=$(echo "$URL" | sed 's|https\?://||; s|/|--|g; s|--$||; s|[^a-zA-Z0-9._-]|-|g')
-agent-browser screenshot ".claude/screenshots/${FILENAME}.png"
+SCREENSHOT_PATH="$PWD/.claude/screenshots/${FILENAME}.png"
+mkdir -p "$(dirname "$SCREENSHOT_PATH")"
+agent-browser screenshot "$SCREENSHOT_PATH"
 ```
 
-Example: `https://my-app.oh-local.localhost:8443/guide/configuration/` → `.claude/screenshots/my-app.oh-local.localhost-8443--guide--configuration.png`
+Example: `https://my-app.oh-local.localhost:8443/guide/configuration/` → `$PWD/.claude/screenshots/my-app.oh-local.localhost-8443--guide--configuration.png`
+
+### Annotated screenshots
+
+To take an annotated screenshot, use `scripts/annotate-screenshot.sh`. The script works on the page that agent-browser has open:
+
+```bash
+bash scripts/annotate-screenshot.sh "$SCREENSHOT_PATH" '#title=the card title' '#status=the Baseline time'
+```
+
+The script adds one numbered red callout for each `<selector>=<label>` pair, takes the screenshot, and removes the callouts. It prints the `Callouts:` line for the screenshot, for example `Callouts: 1 is the card title. 2 is the Baseline time.`. Put that line under the screenshot. If a selector matches no element, the script names the selector, exits 1, and writes no file. On bad usage, the script exits 2.
 
 ### Step 5 — Report
 
@@ -186,11 +205,11 @@ Browser ready.
   URL:        $URL
   Viewport:   $VIEWPORT ($WIDTHx$HEIGHT)
   Session:    $SESSION (or "default")
-  Screenshot: .claude/screenshots/$FILENAME.png
+  Screenshot: $SCREENSHOT_PATH
 
   Next steps:
-    agent-browser screenshot <path>       # capture to custom path
-    agent-browser snapshot -i             # interactive elements
+    agent-browser screenshot <absolute-path>  # capture to custom path
+    agent-browser snapshot -i                 # interactive elements
     agent-browser is visible "<selector>" # wait for element
     agent-browser close                   # end session (always do this)
 ```
