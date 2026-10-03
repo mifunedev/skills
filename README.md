@@ -22,7 +22,7 @@
 A portable, cross-agent skill library for [Claude Code](https://claude.ai/code) and compatible AI agents.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-12-brightgreen)](registry.json)
+[![Skills](https://img.shields.io/badge/skills-11-brightgreen)](registry.json)
 
 </div>
 
@@ -47,7 +47,7 @@ The installer pins the registry commit SHA in `.mifune/skills.lock` — re-insta
 
 ## 📦 Skill Catalog
 
-12 skills across 4 categories:
+11 skills across 4 categories:
 
 | Skill | Category | Description |
 |-------|----------|-------------|
@@ -57,8 +57,7 @@ The installer pins the registry commit SHA in `.mifune/skills.lock` — re-insta
 | [`release`](skills/release) | dev-workflow | Cut a CalVer release: version, tag, push, CI poll, verify image |
 | [`worktrees`](skills/worktrees) | dev-workflow | Manage `.worktrees/` lifecycle: create, list, remove, clean, audit |
 | [`delegate`](skills/delegate) | orchestration | Parallel execution coordinator — decomposes plans into wave-executed sub-agents |
-| [`jev`](skills/jev) | integration | Typed choice, yes/no, and score judgments from TypeSafe Jev, the hosted System One model |
-| [`laya`](skills/laya) | integration | Self-host Laya, an open-weight System One model, and pilot it against Jev |
+| [`system-one`](skills/system-one) | integration | Typed choice, yes/no, and score judgments from System One: Jev by default, self-hosted Laya as the alternative |
 | [`post-bridge`](skills/post-bridge) | integration | Publish posts, upload media, and schedule content via the Post Bridge API |
 | [`interview`](skills/interview) | open-harness | Adaptive pre-work clarifier — batches 2–4 task-specific questions, then proceeds |
 
@@ -101,7 +100,7 @@ Checksum algorithm: [`docs/checksum.md`](docs/checksum.md). Portability rules (C
 
 | Version | Status | Highlights |
 |---------|--------|------------|
-| **V0** | ✅ Current | 12 skills, hand-written `registry.json`, Bash installer, CI validator |
+| **V0** | ✅ Current | 11 skills, hand-written `registry.json`, Bash installer, CI validator |
 | **V1** | 🔵 Planned | TypeScript CLI (`@mifune/skills-cli`), npm + GHCR distribution, `skills.mifune.dev` catalog |
 | **V2** | 🔵 Planned | Sigstore signing, `oh skills` wrapper, standalone binary |
 | **V3** | 🔵 Planned | Community contributions, federated registries |
