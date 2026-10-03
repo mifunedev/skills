@@ -1,16 +1,17 @@
 # Tracker: convert prd.md to prd.json
 
-Convert an approved `.agro/tasks/<slug>/prd.md` to `.agro/tasks/<slug>/prd.json`
+Convert an approved `<tasks-dir>/<slug>/prd.md` to `<tasks-dir>/<slug>/prd.json`
 in the same folder. The folder name is the slug. Do not derive the slug again.
+`SKILL.md` defines `<tasks-dir>`.
 
 ## Inputs
 
-- The task folder, for example `.agro/tasks/install-prereq-detection/`.
+- The task folder, for example `<tasks-dir>/install-prereq-detection/`.
 - `--issue <N>`: the GitHub issue number. This argument is required.
 - `--prefix <feat|bug|task|audit|skill>`: the branch prefix. The default is `feat`.
 
 If `--issue` is missing, stop and write nothing. Print this message:
-"issue number required: open the GitHub issue first per `.agro/skills/git/SKILL.md`, then run again with `--issue <N>`."
+"issue number required: open the GitHub issue first, then run again with `--issue <N>`."
 
 ## Output schema
 
@@ -37,7 +38,7 @@ If `--issue` is missing, stop and write nothing. Print this message:
 }
 ```
 
-Example: folder `.agro/tasks/install-prereq-detection/`, `--issue 175`, and
+Example: folder `<tasks-dir>/install-prereq-detection/`, `--issue 175`, and
 `--prefix task` give `"branchName": "task/175-install-prereq-detection"`.
 
 The story fields `dependsOn`, `files`, and `commit` are optional:

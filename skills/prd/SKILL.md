@@ -2,7 +2,7 @@
 name: prd
 description: |
   Write or revise a repository-grounded plan for one task at
-  .agro/tasks/<slug>/prd.md, with user stories, binary acceptance criteria,
+  <tasks-dir>/<slug>/prd.md, with user stories, binary acceptance criteria,
   and the section headings of the feature issue template. Apply /ste.
   This skill plans only. It never implements the plan.
   TRIGGER when: "write a plan", "plan this", "plan this feature",
@@ -16,14 +16,15 @@ metadata:
 
 # PRD
 
-Write one plan per task. The plan is `.agro/tasks/<slug>/prd.md`. The operator
+Write one plan per task. The plan is `<tasks-dir>/<slug>/prd.md`. The operator
 reviews it, and the implementation owner builds from it. Run inline in the
 active session.
 
 ## Required contract
 
-- Write the plan to `.agro/tasks/<slug>/prd.md` in the target repository.
-- Read `.agro/skills/ste/SKILL.md` before you write. Apply `/ste` to every plan and every revision.
+- Write the plan to `<tasks-dir>/<slug>/prd.md` in the target repository.
+- `<tasks-dir>` is the directory where the host keeps task folders. Use the directory that the host configures. An AGRO harness uses the `tasks` folder of its control plane.
+- Read the `SKILL.md` of the `/ste` skill before you write. Apply `/ste` to every plan and every revision.
 - Plan only. Do not implement, commit, push, open a pull request, launch workers, or start services.
 - Writing or revising a plan is never approval.
 
@@ -32,14 +33,14 @@ active session.
 Each tool call sends the whole context again, so the number of tool calls sets the cost.
 Keep the grounding complete, and remove repeated work.
 
-1. Read the setup files in one turn with two parallel Bash calls. The first call reads the input file, [`references/tracker.md`](references/tracker.md), and each applicable `AGENTS.md`. The second call reads `.agro/skills/ste/SKILL.md` alone.
+1. Read the setup files in one turn with two parallel Bash calls. The first call reads the input file, [`references/tracker.md`](references/tracker.md), and each applicable `AGENTS.md`. The second call reads the `SKILL.md` of the `/ste` skill alone.
 2. Ground the plan in about 2 to 4 batched calls. Section 3 gives the batch rules.
 3. Use one Bash call to write the plan and to verify the plan. Section 6 gives the command.
 4. Fix all checker findings in at most one more call.
 
 - Read each file one time. Do not read a file again after its content is in the context.
 - If a tool truncates an output, read only the missing line range with `sed -n`.
-- Do not read `.github/ISSUE_TEMPLATE/feat.md`. Section 5 holds the headings of that template.
+- Do not read the feature issue template of the repository. Section 5 holds the headings of the AGRO feature issue template.
 - Send independent tool calls in parallel in the same response.
 
 ## 1. Resolve the request
@@ -75,7 +76,7 @@ The result matches `[a-z0-9-]+`. The slug becomes the `<shortdesc>` segment of t
 | `Add a long six word feature` | rejected: more than 5 words |
 | `archive` | rejected: reserved name |
 
-If `.agro/tasks/<slug>/prd.md` exists and the operator did not ask for a
+If `<tasks-dir>/<slug>/prd.md` exists and the operator did not ask for a
 revision of it, ask before you replace it.
 
 ## 3. Ground the plan
@@ -112,7 +113,7 @@ For comprehensive input, skip this step.
 
 ## 5. Write the plan
 
-Use the section headings of `.github/ISSUE_TEMPLATE/feat.md`, in this order.
+Use the section headings of the AGRO feature issue template, in this order.
 When a section does not apply, write "N/A" and give the reason.
 
 ```markdown
@@ -174,9 +175,9 @@ Filled by the advisor before undraft.
 - Size and order the stories by the rules in [`references/tracker.md`](references/tracker.md).
 - Make the last story capture the manual review evidence. The story depends on the stories that it proves.
   - For a user interface change, the story records an agent-browser journey with annotated screenshots.
-  - For a server, CLI, or API change, the story writes a command transcript to `.agro/tasks/<slug>/evidence/manual-review.md`.
+  - For a server, CLI, or API change, the story writes a command transcript to `<tasks-dir>/<slug>/evidence/manual-review.md`.
   - The story uses a live or local resource only with operator approval, and it deletes each resource that it creates.
-  - Close uses the evidence to fill the PR `## Manual review` section in the shape of [`.agro/skills/git/references/manual-review.md`](../git/references/manual-review.md).
+  - Close uses the evidence to fill the PR `## Manual review` section. If the host provides a manual-review template, the close step follows the shape of that template.
 - If the plan has no user interface change and no server, CLI, or API change, state the reason in `## Out of Scope`. Omit the evidence story.
 
 ### Acceptance criteria
@@ -192,9 +193,9 @@ For each story that changes a user interface, add this criterion:
 ## 6. Verify and report
 
 1. Use one Bash call to write the plan and to verify the plan. Do not use the Write tool.
-   - Write the file with a quoted heredoc, so that backticks and `$` stay literal: `mkdir -p .agro/tasks/<slug> && cat > <prd-path> <<'PRD_EOF'`. End the heredoc with a `PRD_EOF` line.
-   - In the same call, run `grep -n '^## \|^### US-\|^- \[ \]\|^Status:' <prd-path>; bash .agro/skills/ste/scripts/ste-check.sh <prd-path>; echo "exit=$?"`.
-   - Run the checker from the harness repository. Use an absolute path for another repository.
+   - Write the file with a quoted heredoc, so that backticks and `$` stay literal: `mkdir -p <tasks-dir>/<slug> && cat > <prd-path> <<'PRD_EOF'`. End the heredoc with a `PRD_EOF` line.
+   - In the same call, run `grep -n '^## \|^### US-\|^- \[ \]\|^Status:' <prd-path>; bash <ste-check> <prd-path>; echo "exit=$?"`.
+   - `<ste-check>` is the path to the `ste-check.sh` script of the installed `/ste` skill. If the target repository does not hold that skill, use an absolute path.
    - The output of that command is the read-back from disk.
 2. From that output, confirm that each story has at least one acceptance criterion.
 3. From that output, confirm that each section is present and in order. `## Lessons` must be the last section.
@@ -215,11 +216,11 @@ Do these steps only after the operator approves the plan. The approval is an
 explicit operator statement. Writing or revising the plan does not start
 either step.
 
-1. Convert `prd.md` to `.agro/tasks/<slug>/prd.json`. Follow [`references/tracker.md`](references/tracker.md).
-2. Offer the "Draft PR for a task" procedure in [`.agro/skills/git/SKILL.md`](../git/SKILL.md). Run the procedure only when the operator accepts.
+1. Convert `prd.md` to `<tasks-dir>/<slug>/prd.json`. Follow [`references/tracker.md`](references/tracker.md).
+2. If the host provides a git workflow with a procedure that opens a draft pull request for a task, offer that procedure. Run the procedure only when the operator accepts.
 
 ## Examples
 
-- `/prd webhook retry limits` writes a grounded draft at `.agro/tasks/webhook-retry-limits/prd.md`.
-- `/prd .agro/tasks/webhook-retry-limits/prd.md` reads the draft and revises it in place.
+- `/prd webhook retry limits` writes a grounded draft at `<tasks-dir>/webhook-retry-limits/prd.md`.
+- `/prd <tasks-dir>/webhook-retry-limits/prd.md` reads the draft and revises it in place.
 - `/prd` with no request prints the usage message and writes nothing.
