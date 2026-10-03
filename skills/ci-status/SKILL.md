@@ -94,10 +94,8 @@ gh api "repos/$REPO/actions/jobs/$JOB_ID/logs" 2>&1 \
 
 - **PASS**: Report "CI green" with the run URL
 - **FAIL**: Report the failing step, error message, and suggest a fix. Then fix the issue, commit, push, and run `/ci-status` again
-- **NO RUN**: No workflow's `on:` filter matched the push, or `PR_NUMBER` was set but `gh pr checks` returned no rows (the PR exists but no workflows were triggered yet). *(Note: the workflow names below reflect this harness's layout and may differ in other checkouts.)*
-  - `ci-harness.yml` — `.agro/**`, `docs/**`, `.devcontainer/**`, `package.json`, `pnpm-lock.yaml`, itself
-  - `sandbox-boot-guard.yml` — `.devcontainer/**`, `.agro/cli/**`, `.agro/scripts/**`, `.agro/install/**`
-  - `release.yml` — every push to `main` or `master`; validation precedes automatic release publication
+- **NO RUN**: No workflow's `on:` filter matched the push, or `PR_NUMBER` was set but `gh pr checks` returned no rows (the PR exists but no workflows were triggered yet).
+  List the workflows of the repository with `gh workflow list`. Read each `on:` block in `.github/workflows/`.
 
   Diagnose with: `git diff --name-only HEAD~1 HEAD` and compare against each workflow's `on:` block.
 

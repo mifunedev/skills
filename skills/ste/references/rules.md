@@ -368,7 +368,7 @@ Write the unit with every number. Write the absolute path or the repo-relative p
 
 ```text
 Wrong: The timeout is large. Edit the config in the scripts folder.
-Right: `/delegate` keeps acceptance with one owner. Read `.agro/skills/delegate/SKILL.md` for the workflow.
+Right: `/delegate` keeps acceptance with one owner. Read `skills/delegate/SKILL.md` for the workflow.
 ```
 
 ### 39. A heading is not an antecedent

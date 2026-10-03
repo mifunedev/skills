@@ -3,7 +3,7 @@ name: delegate
 description: |
   TRIGGER when: asked to "delegate this", "run this plan", "execute the stories",
   or "parallelize" the work. Writing or reading a plan is not a trigger and
-  authorizes no dispatch. Runs the stories in .agro/tasks/<slug>/prd.json as
+  authorizes no dispatch. Runs the stories in the prd.json task tracker as
   bounded workers in dependency waves. The active session verifies each result,
   accepts it, and records it in prd.json.
 metadata:
@@ -39,7 +39,9 @@ phases share substantial context or need iterative refinement.
 
 Resolve the input from the arguments:
 
-1. `<task-slug>`: read `.agro/tasks/<slug>/prd.json`.
+1. `<task-slug>`: read `<tasks-root>/<slug>/prd.json`. `<tasks-root>` is the
+   task directory where `/prd` writes plans. The AGRO layout keeps it in the
+   `tasks` folder of the control-plane directory.
 2. `--plan <path>`: read the `prd.json` at `<path>`.
 3. A free-text plan with no `prd.json`: run `/prd` first to make the tracker.
    To skip the tracker, dispatch once with no saved state. Tell the operator
@@ -114,11 +116,11 @@ The advisor does not repair. Dependents of a failed story wait.
 
 After acceptance, do these steps on the task branch:
 
-1. Commit `prd.json` with the accepted story. Do not push it. `/git` § Draft PR
-   for a task names the two pushes.
+1. Commit `prd.json` with the accepted story. Do not push it. The git workflow of the
+   repository names the pushes for a draft task PR.
 2. Tick the story in the PR `## Stories` checklist.
-3. Remove the worker worktree and branch. Use the git maintenance shim that
-   `/git` names.
+3. Remove the worker worktree and branch. Use the git maintenance command that
+   the git workflow of the repository names.
 
 ## Resume
 
@@ -165,9 +167,9 @@ When every story has `passes: true`, do these steps:
    "None" is a valid body.
 3. Fill the PR evidence sections from the `notes` in `prd.json`.
 4. Fill the PR `## Manual review` section from the evidence of the last story.
-   Use the shape of [`.agro/skills/git/references/manual-review.md`](../git/references/manual-review.md).
+   Use the manual-review shape that the git workflow of the repository defines.
    Write only the expected results that the evidence observed.
-5. Continue with the "Ready for review" step of `/git`.
+5. Continue with the "Ready for review" step of the git workflow of the repository.
 
 ## Dry run
 
