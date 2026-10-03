@@ -23,26 +23,6 @@
       "updated": "2026-05-17"
     },
     {
-      "name": "agro-host-matrix",
-      "path": "skills/agro-host-matrix",
-      "version": "0.1.0",
-      "checksum": "sha256:9cc9b4cd9e1f029a00ca857f4167bd8bdd0ae9927484a4b92528483b190fb19a",
-      "description": "Validate mifunedev/agro expectations on real hosting environments and run the AGRO hosting-substrate matrix reproducibly on Vercel Sandbox, exe.dev, or an agro-console node: 15 AGRO operation rows with one RESULT line each, per-row rationale, a 2026-10 baseline, and guaranteed VM cleanup. TRIGGER when: asked to validate an AGRO release or candidate on real VMs, check AGRO for regressions, qualify a provider for AGRO, or compare VM providers.",
-      "category": "agro",
-      "requires-tools": [
-        "bash",
-        "ssh",
-        "curl",
-        "jq",
-        "awk",
-        "tmux"
-      ],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-10-03",
-      "updated": "2026-10-03"
-    },
-    {
       "name": "ci-status",
       "path": "skills/ci-status",
       "version": "0.1.0",
@@ -126,6 +106,26 @@
       "clients": [],
       "license": "MIT",
       "added": "2026-05-17",
+      "updated": "2026-10-03"
+    },
+    {
+      "name": "remote-sandbox",
+      "path": "skills/remote-sandbox",
+      "version": "0.1.0",
+      "checksum": "sha256:525784f6cac610000df16e07fbf24a7381b54e03aef184e9d2fd5d2c7397f251",
+      "description": "Test AGRO on a new provider VM with one command. The driver creates a VM on exe.dev or Vercel Sandbox, runs a check detached in the VM, polls the check log, and destroys the VM. The main scenario is the fresh install (F1 to F4); the second is the AGRO hosting matrix (R01 to R14, R02b), the cgroup probe, and the VM restart test. A provider adapter of five functions and three optional hooks adds a provider. TRIGGER when: asked to validate an AGRO release or candidate build on a fresh VM, run the fresh-install check or the AGRO hosting matrix, run the cgroup probe or the VM restart test, or add a provider adapter.",
+      "category": "agro",
+      "requires-tools": [
+        "bash",
+        "ssh",
+        "curl",
+        "jq",
+        "awk",
+        "python3"
+      ],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-10-03",
       "updated": "2026-10-03"
     },
     {

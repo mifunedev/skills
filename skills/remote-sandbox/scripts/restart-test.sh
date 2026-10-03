@@ -2,19 +2,25 @@
 set -uo pipefail
 DIR=$(cd "$(dirname "$0")" && pwd)
 . "$DIR/lib.sh"
-PROVIDER=exedev
-MODE=${1:-}
-case "$MODE" in sync|settled) ;; *) echo "usage: restart-test.sh <sync|settled>" >&2; exit 2;; esac
+usage() {
+  local p providers
+  providers=$(for p in $(valid_providers); do declare -F "${p}_restart" >/dev/null && echo "$p"; done | paste -sd '|' -)
+  echo "usage: restart-test.sh <${providers:-no adapter with a restart function loaded}> <sync|settled>" >&2
+  exit 2
+}
+PROVIDER=${1:-}; MODE=${2:-}
+valid_provider "$PROVIDER" && declare -F "${PROVIDER}_restart" >/dev/null || usage
+case "$MODE" in sync|settled) ;; *) usage;; esac
 IMAGE=${IMAGE:-ghcr.io/mifunedev/agro:latest}
 NAME=agro-mx-rs-$MODE-$(date +%H%M%S)
-LOG="$MATRIX_OUT/exedev-restart-$MODE-$(date +%Y%m%d-%H%M%S).log"
+LOG="$MATRIX_OUT/$PROVIDER-restart-$MODE-$(date +%Y%m%d-%H%M%S).log"
 echo "log: $LOG"
 exec >>"$LOG" 2>&1
 trap finish EXIT
 trap "" HUP
 trap "exit 130" INT TERM
 HC="su sandbox -c 'bash /home/sandbox/harness/.agro/scripts/sandbox-healthcheck.sh' >/dev/null 2>&1 && echo ok"
-echo "== exedev $NAME mode=$MODE image=$IMAGE date=$(date -u +%FT%TZ)"
+echo "== $PROVIDER $NAME mode=$MODE image=$IMAGE date=$(date -u +%FT%TZ)"
 t0=$(now); px create "$NAME" >/dev/null; t1=$(now)
 wait_shell || { echo "RESULT R13-time-to-shell FAIL"; exit 1; }
 t2=$(now)

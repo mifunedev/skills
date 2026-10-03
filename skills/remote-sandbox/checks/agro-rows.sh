@@ -23,12 +23,12 @@ else result R04-cgroup-delegation FAIL "memory/io: $(tr -d '\n' </tmp/r04)"; fi
 
 if [ $MODE = host ]; then
   echo "== R02"
-  curl -fsSL "${GET_AGRO_URL:-https://agro.mifune.dev/get-agro.sh}" -o /tmp/get-agro.sh && bash /tmp/get-agro.sh --yes >/tmp/get-agro.log 2>&1; hash -r
+  curl -fsSL "${INSTALL_URL:-https://github.com/mifunedev/agro/releases/latest/download/install.sh}" -o /tmp/install.sh && bash /tmp/install.sh --yes >/tmp/install.log 2>&1; hash -r
   if agro --version >/dev/null 2>&1; then result R02b-noninteractive-cli PASS "agro runs in a non-interactive shell"
   else result R02b-noninteractive-cli FAIL "$(agro --version 2>&1 | head -1); node from nvm loads only in interactive shells"; fi
   export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" >/dev/null 2>&1
   agro workspace create >/tmp/ws.log 2>&1
-  [ -d "$HOME/.agro/workspaces/harness/.git" ] && result R02-workspace PASS "agro $(agro --version 2>/dev/null)" || result R02-workspace FAIL "$(tail -3 /tmp/get-agro.log /tmp/ws.log | tr '\n' ' ')"
+  [ -d "$HOME/.agro/workspaces/harness/.git" ] && result R02-workspace PASS "agro $(agro --version 2>/dev/null)" || result R02-workspace FAIL "$(tail -3 /tmp/install.log /tmp/ws.log | tr '\n' ' ')"
 
   echo "== R03"
   if command -v docker >/dev/null && $SUDO docker info >/dev/null 2>&1; then
