@@ -1,5 +1,5 @@
 {
-  "_v0_note": "This registry.json is hand-written for the V0 seed release and indexes only the Mifune-curated skills under skills/<name>/. The automated generator (scripts/publish-registry.sh) and drift-parity CI check are deferred to V1 per the project PRD Non-Goals. Do not edit checksum values manually — recompute using scripts/refresh-checksums.sh (algorithm documented in docs/checksum.md).",
+  "_v0_note": "This registry.json is hand-written for the V0 seed release and indexes only the Mifune-curated skills under skills/<name>/. The automated generator (scripts/publish-registry.sh) and drift-parity CI check are deferred to V1 per the project PRD Non-Goals. Do not edit checksum values manually \u2014 recompute using scripts/refresh-checksums.sh (algorithm documented in docs/checksum.md).",
   "$schema": "./docs/schema/registry.v1.json",
   "name": "mifunedev-skills",
   "description": "Cross-agent skill library curated by Mifune Dev.",
@@ -47,7 +47,7 @@
       "path": "skills/ci-status",
       "version": "0.1.0",
       "checksum": "sha256:01495f9ac8ead7e7b9deffa0490d6e8970c4bcbb06a870ec4384ad63231b5e6f",
-      "description": "Check the CI pipeline status for the current branch after pushing changes. Reports pass/fail with failure details. Use this after every push to confirm your changes are truly done — CI must be green. TRIGGER when: after git push, after committing changes, when asked to check CI, or when verifying that work is complete.",
+      "description": "Check the CI pipeline status for the current branch after pushing changes. Reports pass/fail with failure details. Use this after every push to confirm your changes are truly done \u2014 CI must be green. TRIGGER when: after git push, after committing changes, when asked to check CI, or when verifying that work is complete.",
       "category": "dev-workflow",
       "requires-tools": [
         "gh"
@@ -56,21 +56,6 @@
       "license": "MIT",
       "added": "2026-05-17",
       "updated": "2026-05-17"
-    },
-    {
-      "name": "context-audit",
-      "path": "skills/context-audit",
-      "version": "0.1.0",
-      "checksum": "sha256:02dd6324bb7ab62331a42fa414e2325bbb293c4e6f0ebb8aeead09f3948595a1",
-      "description": "Score the default-loaded context budget across 4 dimensions and emit KEEP/TRIM/DEMOTE/CUT verdicts per file. Optional Tier-2 ablation harness removes a target file, runs a fixed probe suite via claude -p, and measures behavior degradation — the only provably safe gate for cutting load-bearing content. TRIGGER when: asked to audit context window, check default context load, evaluate rules for signal vs noise, or before/after any change to context/rules/ or CLAUDE.md.",
-      "category": "agro",
-      "requires-tools": [
-        "claude"
-      ],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-05-22",
-      "updated": "2026-05-22"
     },
     {
       "name": "delegate",
@@ -90,7 +75,7 @@
       "path": "skills/interview",
       "version": "0.1.0",
       "checksum": "sha256:ce4a1f08dd5079468bd6d05c6cc579b20c1fe7a32968b9614bf9e46e78acd7c2",
-      "description": "Adaptive pre-work clarifier. Picks 2–4 task-specific questions via AskUserQuestion, echoes a brief scope summary, then proceeds. Refuses for trivial tasks. TRIGGER when: /interview invoked explicitly, OR before non-trivial work where scope/intent/constraints are ambiguous AND the user hasn't already specified them.",
+      "description": "Adaptive pre-work clarifier. Picks 2\u20134 task-specific questions via AskUserQuestion, echoes a brief scope summary, then proceeds. Refuses for trivial tasks. TRIGGER when: /interview invoked explicitly, OR before non-trivial work where scope/intent/constraints are ambiguous AND the user hasn't already specified them.",
       "category": "agro",
       "requires-tools": [],
       "clients": [],
@@ -177,7 +162,7 @@
       "path": "skills/worktrees",
       "version": "0.1.0",
       "checksum": "sha256:fd1087fac649b7a5d950347ca4392de16575b2a3913e1d769cc36bf9ae70ce27",
-      "description": "Manage .worktrees/ lifecycle: create worktree, list worktrees, remove worktree, clean worktrees, stale worktrees audit, isolate work, project clone. TRIGGER when: any git worktree operation, branch isolation needed, stale worktrees review, project clone under projects/ (e.g. \"clone <owner>/<repo> to projects\", \"add <repo> to projects\", \"clone this repo into projects\"), worktree cleanup. A leading-slash harness dir like \"/worktrees\" still means the repo-relative .worktrees/ — never a literal filesystem-root path.",
+      "description": "Manage .worktrees/ lifecycle: create worktree, list worktrees, remove worktree, clean worktrees, stale worktrees audit, isolate work, project clone. TRIGGER when: any git worktree operation, branch isolation needed, stale worktrees review, project clone under projects/ (e.g. \"clone <owner>/<repo> to projects\", \"add <repo> to projects\", \"clone this repo into projects\"), worktree cleanup. A leading-slash harness dir like \"/worktrees\" still means the repo-relative .worktrees/ \u2014 never a literal filesystem-root path.",
       "category": "dev-workflow",
       "requires-tools": [
         "git"
