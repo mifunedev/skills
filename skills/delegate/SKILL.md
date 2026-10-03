@@ -39,9 +39,9 @@ phases share substantial context or need iterative refinement.
 
 Resolve the input from the arguments:
 
-1. `<task-slug>`: read `<tasks-root>/<slug>/prd.json`. `<tasks-root>` is the
-   task directory where `/prd` writes plans. The AGRO layout keeps it in the
-   `tasks` folder of the control-plane directory.
+1. `<task-slug>`: read `<tasks-dir>/<slug>/prd.json`. `<tasks-dir>` is the
+   directory where the host keeps task folders. Use the directory that the host
+   configures. An AGRO harness uses the `tasks` folder of its control plane.
 2. `--plan <path>`: read the `prd.json` at `<path>`.
 3. A free-text plan with no `prd.json`: run `/prd` first to make the tracker.
    To skip the tracker, dispatch once with no saved state. Tell the operator
