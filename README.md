@@ -22,7 +22,7 @@
 A portable, cross-agent skill library for [Claude Code](https://claude.ai/code) and compatible AI agents.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-14-brightgreen)](registry.json)
+[![Skills](https://img.shields.io/badge/skills-12-brightgreen)](registry.json)
 
 </div>
 
@@ -47,7 +47,7 @@ The installer pins the registry commit SHA in `.mifune/skills.lock` — re-insta
 
 ## 📦 Skill Catalog
 
-14 skills across 5 categories:
+12 skills across 4 categories:
 
 | Skill | Category | Description |
 |-------|----------|-------------|
@@ -61,7 +61,6 @@ The installer pins the registry commit SHA in `.mifune/skills.lock` — re-insta
 | [`laya`](skills/laya) | integration | Self-host Laya, an open-weight System One model, and pilot it against Jev |
 | [`post-bridge`](skills/post-bridge) | integration | Publish posts, upload media, and schedule content via the Post Bridge API |
 | [`interview`](skills/interview) | open-harness | Adaptive pre-work clarifier — batches 2–4 task-specific questions, then proceeds |
-| [`skill-lint`](skills/skill-lint) | skills-meta | Score skills for staleness across 5 dimensions: CURRENT / STALE / BROKEN / DELETE |
 
 The canonical index — versions, checksums, and `requires-tools` per skill — is [`registry.json`](registry.json).
 
@@ -102,7 +101,7 @@ Checksum algorithm: [`docs/checksum.md`](docs/checksum.md). Portability rules (C
 
 | Version | Status | Highlights |
 |---------|--------|------------|
-| **V0** | ✅ Current | 14 skills, hand-written `registry.json`, Bash installer, CI validator |
+| **V0** | ✅ Current | 12 skills, hand-written `registry.json`, Bash installer, CI validator |
 | **V1** | 🔵 Planned | TypeScript CLI (`@mifune/skills-cli`), npm + GHCR distribution, `skills.mifune.dev` catalog |
 | **V2** | 🔵 Planned | Sigstore signing, `oh skills` wrapper, standalone binary |
 | **V3** | 🔵 Planned | Community contributions, federated registries |

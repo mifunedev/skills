@@ -142,19 +142,6 @@
       "updated": "2026-05-17"
     },
     {
-      "name": "reflect",
-      "path": "skills/reflect",
-      "version": "0.1.0",
-      "checksum": "sha256:413c622a3187efb9e5cb7c3f7ef77c106d538749a62004f41482c523d08474b5",
-      "description": "Deliberate whole-session memory pass: scan the current conversation for durable behavioral patterns, run the qualify filter, classify surviving lessons by memory tier, propose MEMORY.md / IDENTITY.md additions for confirmation, then write only what was approved plus the mandatory log entry. Operationalizes the Memory Improvement Protocol (context/rules/memory.md) as an explicit, session-closing skill rather than a per-run afterthought. TRIGGER when: /reflect invoked explicitly, or when the session is closing and contains decisions, surprises, or failure modes worth preserving.",
-      "category": "open-harness",
-      "requires-tools": [],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-05-22",
-      "updated": "2026-05-22"
-    },
-    {
       "name": "release",
       "path": "skills/release",
       "version": "0.1.0",
@@ -171,23 +158,10 @@
       "updated": "2026-05-17"
     },
     {
-      "name": "skill-lint",
-      "path": "skills/skill-lint",
-      "version": "0.1.0",
-      "checksum": "sha256:fbc3398435fe3c4f337b178250cf140ec83c4eca5d0cbfcd4039bd8f78056bd9",
-      "description": "Score all skills for staleness using 5 dimensions (freshness, usage, integrity, format, dependencies). Reports CURRENT/STALE/BROKEN/DELETE verdicts with specific recommendations. TRIGGER when: asked to audit skills, check skill health, \"are my skills stale\", \"skill lint\", or periodically via heartbeat.",
-      "category": "skills-meta",
-      "requires-tools": [],
-      "clients": [],
-      "license": "MIT",
-      "added": "2026-05-17",
-      "updated": "2026-05-17"
-    },
-    {
       "name": "ste",
       "path": "skills/ste",
       "version": "0.1.0",
-      "checksum": "sha256:860641f67af269f5ffda8d023fdf3129f8b7bc94c6e4658b23bc66334124b3e6",
+      "checksum": "sha256:d83e979df38394b012b90f99375846adc8ea9c1ca9f8f8c80ac7ece3ffb2af25",
       "description": "Write and rewrite technical prose in Simplified Technical English style: short declarative sentences, active voice, imperative procedures, one term per concept, no hedges, and explicit conditions. Never simplifies code, commands, identifiers, paths, or quoted literals. Marks missing values with a placeholder rather than inventing one. Ships a deterministic checker. TRIGGER when: asked to write, rewrite, simplify, clarify, tighten, or review documentation, a README, a runbook, a spec, release notes, a PR or commit body, an error message, CLI help text, an API description, or agent instructions; or when asked for plain English, controlled language, STE, Simplified Technical English, or \"make this unambiguous\".",
       "category": "dev-workflow",
       "requires-tools": [],
