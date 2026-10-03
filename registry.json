@@ -23,6 +23,26 @@
       "updated": "2026-05-17"
     },
     {
+      "name": "agro-host-matrix",
+      "path": "skills/agro-host-matrix",
+      "version": "0.1.0",
+      "checksum": "sha256:9cc9b4cd9e1f029a00ca857f4167bd8bdd0ae9927484a4b92528483b190fb19a",
+      "description": "Validate mifunedev/agro expectations on real hosting environments and run the AGRO hosting-substrate matrix reproducibly on Vercel Sandbox, exe.dev, or an agro-console node: 15 AGRO operation rows with one RESULT line each, per-row rationale, a 2026-10 baseline, and guaranteed VM cleanup. TRIGGER when: asked to validate an AGRO release or candidate on real VMs, check AGRO for regressions, qualify a provider for AGRO, or compare VM providers.",
+      "category": "agro",
+      "requires-tools": [
+        "bash",
+        "ssh",
+        "curl",
+        "jq",
+        "awk",
+        "tmux"
+      ],
+      "clients": [],
+      "license": "MIT",
+      "added": "2026-10-03",
+      "updated": "2026-10-03"
+    },
+    {
       "name": "ci-status",
       "path": "skills/ci-status",
       "version": "0.1.0",
@@ -43,7 +63,7 @@
       "version": "0.1.0",
       "checksum": "sha256:02dd6324bb7ab62331a42fa414e2325bbb293c4e6f0ebb8aeead09f3948595a1",
       "description": "Score the default-loaded context budget across 4 dimensions and emit KEEP/TRIM/DEMOTE/CUT verdicts per file. Optional Tier-2 ablation harness removes a target file, runs a fixed probe suite via claude -p, and measures behavior degradation — the only provably safe gate for cutting load-bearing content. TRIGGER when: asked to audit context window, check default context load, evaluate rules for signal vs noise, or before/after any change to context/rules/ or CLAUDE.md.",
-      "category": "open-harness",
+      "category": "agro",
       "requires-tools": [
         "claude"
       ],
@@ -71,7 +91,7 @@
       "version": "0.1.0",
       "checksum": "sha256:ce4a1f08dd5079468bd6d05c6cc579b20c1fe7a32968b9614bf9e46e78acd7c2",
       "description": "Adaptive pre-work clarifier. Picks 2–4 task-specific questions via AskUserQuestion, echoes a brief scope summary, then proceeds. Refuses for trivial tasks. TRIGGER when: /interview invoked explicitly, OR before non-trivial work where scope/intent/constraints are ambiguous AND the user hasn't already specified them.",
-      "category": "open-harness",
+      "category": "agro",
       "requires-tools": [],
       "clients": [],
       "license": "MIT",

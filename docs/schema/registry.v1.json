@@ -87,7 +87,7 @@
             "type": "string",
             "description": "Browsing category on skills.mifune.dev.",
             "enum": [
-              "open-harness",
+              "agro",
               "dev-workflow",
               "code-review",
               "cloud-ops",
