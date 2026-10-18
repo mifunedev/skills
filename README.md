@@ -19,7 +19,7 @@
   </tr>
 </table>
 
-A portable, cross-agent skill library for [Claude Code](https://claude.ai/code) and compatible AI agents.
+A portable, cross-agent skill library for [Claude Code](https://claude.ai/code), Codex, Pi, Hermes, OpenCode, and other Agent Skills–compatible harnesses.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-11-brightgreen)](registry.json)
